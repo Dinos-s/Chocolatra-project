@@ -27,7 +27,7 @@ O projeto possui uma interface responsiva, adaptando-se a diferentes tamanhos de
 Tela responsável pela autenticação do usuário no sistema.
 
 <p align="center">
-  <img src="imagens-demonstrativos/telaLogin.png" alt="Tela de Login" width="750">
+  <img src="/imagens-demonstrativos/telaLogin.png" alt="Tela de Login" width="750">
 </p>
 
 ---
@@ -46,13 +46,13 @@ A tela apresenta informações gerais do sistema, como:
 #### Desktop
 
 <p align="center">
-  <img src="imagens-demonstrativos/dashboardDesktop.png" alt="Dashboard Desktop" width="900">
+  <img src="/imagens-demonstrativos/dashboardDesktop.png" alt="Dashboard Desktop" width="900">
 </p>
 
 #### Mobile
 
 <p align="center">
-  <img src="imagens-demonstrativos/dashboardMobile.png" alt="Dashboard Mobile" width="400">
+  <img src="/imagens-demonstrativos/dashboardMobile.png" alt="Dashboard Mobile" width="400">
 </p>
 
 ---
@@ -70,7 +70,7 @@ A tabela apresenta informações como:
 - Ações de edição e exclusão
 
 <p align="center">
-  <img src="imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Gerenciamento de Usuários" width="900">
+  <img src="/imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Gerenciamento de Usuários" width="900">
 </p>
 
 ---
@@ -89,7 +89,7 @@ São disponibilizados campos para:
 - CPF
 
 <p align="center">
-  <img src="imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Cadastro de Usuário" width="900">
+  <img src="/imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Cadastro de Usuário" width="900">
 </p>
 
 ---
@@ -101,7 +101,7 @@ Também é possível editar os dados de usuários já cadastrados.
 Ao selecionar a opção de edição, os dados existentes são carregados no formulário para que possam ser alterados.
 
 <p align="center">
-  <img src="imagens-demonstrativos/secaoUsuariosMobile-edit.png" alt="Edição de Usuário" width="400">
+  <img src="/imagens-demonstrativos/secaoUsuariosMobile-edit.png" alt="Edição de Usuário" width="400">
 </p>
 
 ---
