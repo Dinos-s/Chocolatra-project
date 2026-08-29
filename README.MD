@@ -70,7 +70,7 @@ A tabela apresenta informações como:
 - Ações de edição e exclusão
 
 <p align="center">
-  <img src="/imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Gerenciamento de Usuários" width="900">
+  <img src="/imagens-demonstrativos/secaoUsuariosDesktop(create).png" alt="Gerenciamento de Usuários" width="900">
 </p>
 
 ---
@@ -89,7 +89,7 @@ São disponibilizados campos para:
 - CPF
 
 <p align="center">
-  <img src="/imagens-demonstrativos/secaoUsuariosDesktop-create.png" alt="Cadastro de Usuário" width="900">
+  <img src="/imagens-demonstrativos/secaoUsuariosDesktop(create).png" alt="Cadastro de Usuário" width="900">
 </p>
 
 ---
@@ -101,7 +101,7 @@ Também é possível editar os dados de usuários já cadastrados.
 Ao selecionar a opção de edição, os dados existentes são carregados no formulário para que possam ser alterados.
 
 <p align="center">
-  <img src="/imagens-demonstrativos/secaoUsuariosMobile-edit.png" alt="Edição de Usuário" width="400">
+  <img src="/imagens-demonstrativos/secaoUsuariosMobile(edit).png" alt="Edição de Usuário" width="400">
 </p>
 
 ---
