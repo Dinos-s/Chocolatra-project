@@ -18,16 +18,16 @@
     const msgError = ref('');
     const msgSucesso = ref('');
 
-    // Computed para alternar o texto de títulos e botões dinamicamente
+    // Alternar o texto de títulos e botões dinamicamente
     const tituloFormulario = computed(() => editandoId.value ? 'Edição de Usuário' : 'Inserção de Novo Usuário');
 
     const textoBotao = computed(() => editandoId.value ? 'Salvar Alterações' : 'Cadastrar Usuário');
 
-    // Buscar usuários ao carregar a tela
+    // Buscar usuários ao carregar a tabela
     const carregarUsuarios = async () => {
         try {
             carregando.value = true;
-            const response = await api.get('/usuarios'); // Ajuste a rota conforme sua API
+            const response = await api.get('/usuarios');
             console.log(response.data.users.data);
             
             usuarios.value = response.data.users.data;

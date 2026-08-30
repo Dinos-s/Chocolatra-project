@@ -10,10 +10,10 @@
     })
 
     const emit = defineEmits(['close'])
-    const cadastroAberto = ref(false)
+    const menuAberto = ref(null)
 
-    const toggleMenu = () => {
-        cadastroAberto.value = !cadastroAberto.value
+    const toggleMenu = (menu) => {
+        menuAberto.value = menuAberto.value === menu ? null : menu
     }
 </script>
 
@@ -36,24 +36,44 @@
             <!-- Usuarios -->
             <div class="menu-group">
 
-                <button type="button" class="sidebar-link menu-button" @click="toggleMenu">
+                <button type="button" class="sidebar-link menu-button" @click="toggleMenu('usuarios')">
                     <span class="menu-label">
                         <span>Usuários</span>
                     </span>
 
-                    <span class="arrow" :class="{ rotated: cadastroAberto }"
+                    <span class="arrow" :class="{ rotated: menuAberto === 'usuarios' }"
                     >
                         ▼
                     </span>
                 </button>
 
                 <!-- Submenu -->
-                <div class="submenu" v-if="cadastroAberto">
+                <div class="submenu" v-if="menuAberto === 'usuarios'">
                     <!-- <RouterLink to="/users" class="submenu-link" active-class="active">Usuários</RouterLink> -->
 
-                    <RouterLink to="dashboard/users/new" class="submenu-link" active-class="active" @click="emit('close')">Novo Usuário</RouterLink>
+                    <RouterLink :to="{name:'users'}" class="submenu-link" active-class="active" @click="emit('close')">Novo Usuário</RouterLink>
                 </div>
             </div>
+
+            <!-- Trufas -->
+             <div class="menu-group">
+
+                <button type="button" class="sidebar-link menu-button" @click="toggleMenu('trufas')">
+                    <span class="menu-label">
+                        <span>Trufas</span>
+                    </span>
+
+                    <span class="arrow" :class="{ rotated: menuAberto === 'trufas' }"
+                    >
+                        ▼
+                    </span>
+                </button>
+
+                <!-- Submenu -->
+                <div class="submenu" v-if="menuAberto === 'trufas'">
+                    <RouterLink :to="{name:'trufas'}" class="submenu-link" active-class="active">Trufas</RouterLink>
+                </div>
+             </div>
         </nav>
 
     </aside>

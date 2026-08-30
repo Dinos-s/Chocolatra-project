@@ -1,20 +1,51 @@
+<script setup>
+    import { ref,onMounted } from 'vue';
+    import api from '../services/api';
+
+    const carregando = ref(true)
+    const apiOnline = ref(false)
+
+    const totalUsers = ref(0)
+    const totalTrufas = ref(0)
+
+    const loadDashboard = async () => {
+        carregando.value = true
+
+        try {
+            const responseUsers = await api.get('/usuarios')
+            totalUsers.value = responseUsers.data.users.data.length
+
+            const responseTrufas = await api.get('/trufas')
+            totalTrufas.value = responseTrufas.data.trufas.data.length
+
+            apiOnline.value = true
+        } catch (error) {
+            apiOnline.value = false   
+        }
+    }
+    
+    onMounted(() => {
+        loadDashboard();
+    })
+</script>
+
 <template>
     <h1 class="page-title">Visão Geral</h1>
                     
     <section class="metrics-grid">
         <div class="metric-card">
-            <span class="metric-title">Usuários Ativos</span>
-            <p class="metric-value">1,248</p>
+            <span class="metric-title">Total de Usuários</span>
+            <p class="metric-value">{{ totalUsers }}</p>
         </div>
 
         <div class="metric-card">
-            <span class="metric-title">Sessões do Dia</span>
-            <p class="metric-value">342</p>
+            <span class="metric-title">Total de Trufas</span>
+            <p class="metric-value">{{ totalTrufas }}</p>
         </div>
 
         <div class="metric-card">
             <span class="metric-title">Status do Sistema</span>
-            <p class="metric-value status-online">Online</p>
+            <p class="metric-value" :class="apiOnline ? 'status-online' : 'status-offline'">{{ apiOnline ? 'Online' : 'Offline' }}</p>
         </div>
     </section>
 </template>
@@ -56,5 +87,9 @@
 
     .status-online {
         color: #16a34a;
+    }
+
+    .status-offline {
+        color: #dc2626;
     }
 </style>

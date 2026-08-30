@@ -38,6 +38,11 @@ const router = createRouter({
           name: 'users',
           component: () => import('../views/User/NewUserView.vue'),
         },
+        {
+          path: 'trufas/new',
+          name: 'trufas',
+          component: () => import('../views/Trufas/TrufasView.vue'),
+        },
       ],
     },
     // {
