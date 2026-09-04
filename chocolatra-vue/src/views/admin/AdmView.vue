@@ -1,8 +1,8 @@
 <script setup>
     import { RouterLink, RouterView, useRouter } from 'vue-router';
-    import SideBar from '../components/SideBar.vue';
+    import SideBar from '../../components/SideBar.vue';
     import { ref } from 'vue';
-    import api from '../services/api.js';
+    import api from '../../services/api.js';
 
     const router = useRouter()
     const isSidebarOpen = ref(false)
@@ -14,7 +14,7 @@
     const logout = async () => {
         await api.post('/logout')
         localStorage.removeItem('token')
-        router.push('/')
+        router.push('/adm')
     }
 </script>
 

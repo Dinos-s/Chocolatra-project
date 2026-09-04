@@ -1,7 +1,7 @@
 <script setup>
     import { computed, onMounted, ref } from 'vue';
-    import AlertMessage from '../../components/AlertMessage.vue';
-    import api from '../../services/api.js';
+    import AlertMessage from '../../../components/AlertMessage.vue';
+    import api from '../../../services/api.js';
 
     // Estados da Tabela e Modos de Operação
     const trufas = ref([]);

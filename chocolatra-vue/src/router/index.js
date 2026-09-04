@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import DashboardHomeView from '../views/DasboardHomeView.vue'
+import HomeView from '../views/site/HomeView.vue'
+import LoginView from '../views/admin/LoginView.vue'
+import DashboardHomeView from '../views/admin/DasboardHomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,11 +11,11 @@ const router = createRouter({
       name: 'adm-login',
       component: LoginView,
     },
-    // {
-    //   path: '/new-user',
-    //   name: 'new-user',
-    //   component: () => import('../views/User/NewUserView.vue'),
-    // },
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView,
+    },
     {
       path: '/about',
       name: 'about',
@@ -26,7 +27,7 @@ const router = createRouter({
     {
       path: '/adm',
       name: 'adm',
-      component: () => import('../views/AdmView.vue'),
+      component: () => import('../views/admin/AdmView.vue'),
       meta: { requiresAuth: true },
       children: [
         {
@@ -39,14 +40,14 @@ const router = createRouter({
         {
           path: 'users/new',
           name: 'users',
-          component: () => import('../views/User/NewUserView.vue'),
+          component: () => import('../views/admin/User/NewUserView.vue'),
         },
 
         // Trufas
         {
           path: 'trufas/new',
           name: 'trufas',
-          component: () => import('../views/Trufas/TrufasView.vue'),
+          component: () => import('../views/admin/Trufas/TrufasView.vue'),
         },
       ],
     },
@@ -57,7 +58,7 @@ router.beforeEach((to) => {
   const isAuthenticated = localStorage.getItem('token')
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    return { name: 'home' }
+    return { name: 'adm-login' }
   }
 
   if (to.nome === 'home' && isAuthenticated) {

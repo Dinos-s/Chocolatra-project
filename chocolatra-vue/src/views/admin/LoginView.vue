@@ -1,8 +1,8 @@
 <script setup>
   import { RouterLink, useRouter } from 'vue-router';
-  import AlertMessage from '../components/AlertMessage.vue'
+  import AlertMessage from '../../components/AlertMessage.vue';
   import { ref } from 'vue';
-  import api from '../services/api.js';
+  import api from '../../services/api.js';
 
   const router = useRouter()
   const email = ref('')
