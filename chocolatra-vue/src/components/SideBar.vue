@@ -29,7 +29,7 @@
         <nav class="sidebar-nav">
 
             <!-- Dashboard -->
-            <RouterLink to="/dashboard" class="sidebar-link" @click="emit('close')">
+            <RouterLink to="/adm/dashboard" class="sidebar-link" @click="emit('close')">
                 Dashboard
             </RouterLink>
 
@@ -73,6 +73,7 @@
                 <div class="submenu" v-if="menuAberto === 'trufas'">
                     <RouterLink :to="{name:'trufas'}" class="submenu-link" active-class="active">Trufas</RouterLink>
                 </div>
+                
              </div>
         </nav>
 

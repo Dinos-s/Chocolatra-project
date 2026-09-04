@@ -23,13 +23,13 @@ class TrufasController extends Controller
         $resquest->validate([
             'sabor' => 'required|string|max:255',
             'quantidade' => 'required|integer|max:255',
-            'preco' => 'required|numeric|min:0',
+            // 'preco' => 'required|numeric|min:0',
         ]);
 
         $trufa = Trufa::create([
             'sabor' => $resquest->sabor,
             'quantidade' => $resquest->quantidade,
-            'preco' => $resquest->preco
+            // 'preco' => $resquest->preco
         ]);
 
         return response()->json([
@@ -51,7 +51,7 @@ class TrufasController extends Controller
         $atualizar = [
             'sabor' => $request->sabor,
             'quantidade' => $request->quantidade,
-            'preco' => $request->preco,
+            // 'preco' => $request->preco,
         ];
 
         $trufa->update($atualizar);

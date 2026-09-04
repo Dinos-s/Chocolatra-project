@@ -24,7 +24,7 @@
 
       localStorage.setItem('token', token)
 
-      router.push('/dashboard')
+      router.push('/adm/dashboard')
 
     } catch (error) {
       console.log(error);

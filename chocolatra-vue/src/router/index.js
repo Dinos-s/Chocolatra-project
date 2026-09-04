@@ -6,8 +6,8 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'login',
+      path: '/adm',
+      name: 'adm-login',
       component: LoginView,
     },
     // {
@@ -24,20 +24,25 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/dashboard',
-      component: () => import('../views/DashboardView.vue'),
+      path: '/adm',
+      name: 'adm',
+      component: () => import('../views/AdmView.vue'),
       meta: { requiresAuth: true },
       children: [
         {
-          path: '',
+          path: 'dashboard',
           name: 'dashboard',
           component: DashboardHomeView,
         },
+
+        // Usuarios
         {
           path: 'users/new',
           name: 'users',
           component: () => import('../views/User/NewUserView.vue'),
         },
+
+        // Trufas
         {
           path: 'trufas/new',
           name: 'trufas',
@@ -45,12 +50,6 @@ const router = createRouter({
         },
       ],
     },
-    // {
-    //   path: '/users',
-    //   name: 'users',
-    //   component: () => import('../views/Users/UsersView.vue'),
-    //   meta: { requiresAuth: true },
-    // },
   ],
 })
 

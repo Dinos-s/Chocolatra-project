@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sabor');
             $table->integer('quantidade');
-            $table->float('preco');
+            $table->float('preco')->nullable();
             $table->timestamps();
         });
     }

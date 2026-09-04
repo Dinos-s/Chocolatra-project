@@ -15,6 +15,17 @@
     const msgError = ref('');
     const msgSucesso = ref('');
 
+    const formatarData = (data) => {
+        if (!data) return '-';
+
+        return new Intl.DateTimeFormat('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'America/Sao_Paulo'
+        }).format(new Date(data));
+    };
+
     // Alternar o texto de títulos e botões dinamicamente
     const tituloFormulario = computed(() => editandoId.value ? 'Edição de Trufa' : 'Inserção de Nova Trufa');
 
@@ -27,7 +38,7 @@
             const response = await api.get('/trufas');
             console.log(response.data.trufas.data);
             
-            trufas.value = response.data.trufas.data;
+            trufas.value = response.data.trufas.data;            
         } catch (error) {
             console.error('Erro ao buscar trufas:', error);
         } finally {
@@ -44,7 +55,7 @@
         editandoId.value = trufa.id;
         sabor.value = trufa.sabor;
         quantidade.value = trufa.quantidade;
-        preco.value = Number(trufa.preco).toFixed(2).replace('.', ',');
+        // preco.value = Number(trufa.preco).toFixed(2).replace('.', ',');
         msgError.value = '';
         msgSucesso.value = '';
 
@@ -57,7 +68,7 @@
         editandoId.value = null;
         sabor.value = '';
         quantidade.value = '';
-        preco.value = '';
+        // preco.value = '';
         msgError.value = '';
         msgSucesso.value = '';
     }
@@ -72,7 +83,7 @@
                 const payload = { 
                     sabor: sabor.value,
                     quantidade: Number(quantidade.value),
-                    preco: Number(preco.value.replace(',', '.'))
+                    // preco: Number(preco.value.replace(',', '.'))
                 };
 
                 await api.put(`/editTrufa/${editandoId.value}`, payload);
@@ -83,7 +94,7 @@
                 await api.post('/novaTrufa', {
                     sabor: sabor.value,
                     quantidade: Number(quantidade.value),
-                    preco: Number(preco.value.replace(',', '.'))
+                    // preco: Number(preco.value.replace(',', '.'))
                 });
 
                 msgSucesso.value = 'Trufa salva com sucesso.';
@@ -128,7 +139,8 @@
                         <tr>
                             <th>Sabor</th>
                             <th>Quantidade</th>
-                            <th>Preço</th>
+                            <th>Data de Cadastro</th>
+                            <!-- <th>Preço</th> -->
                             <th class="text-right">Ações</th>
                         </tr>
                     </thead>
@@ -142,7 +154,8 @@
                         <tr v-for="trufa in trufas" :key="trufa.id" :class="{ 'row-selected': editandoId === trufa.id }">
                             <td class="font-medium text-slate-800">{{ trufa.sabor }}</td>
                             <td class="text-slate-600">{{ trufa.quantidade }}</td>
-                            <td class="text-slate-600">R$ {{ Number(trufa.preco).toFixed(2).replace('.', ',') }}</td>
+                            <td class="text-slate-600">{{ formatarData(trufa.created_at) }}</td>
+                            <!-- <td class="text-slate-600">R$ {{ Number(trufa.preco).toFixed(2).replace('.', ',') }}</td> -->
                             <td class="text-right action-buttons">
                                 <button @click="selecionarParaEditar(trufa)" class="btn-icon btn-edit" title="Editar">
                                     ✏️
@@ -183,11 +196,12 @@
                             required class="form-input">
                     </div>
 
-                    <div class="form-group">
+                    <!-- Preço -->
+                    <!-- <div class="form-group">
                         <label class="form-label" for="preco">Preco R$*</label>
                         <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required
                             class="form-input">
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="form-actions">

@@ -2,7 +2,7 @@
     import { RouterLink, RouterView, useRouter } from 'vue-router';
     import SideBar from '../components/SideBar.vue';
     import { ref } from 'vue';
-import api from '../services/api.js';
+    import api from '../services/api.js';
 
     const router = useRouter()
     const isSidebarOpen = ref(false)
@@ -28,8 +28,8 @@ import api from '../services/api.js';
                 </div>
 
                 <nav class="nav">
-                    <RouterLink to="/" class="nav-link">Home</RouterLink>
-                    <RouterLink to="/about" class="nav-link">About</RouterLink>
+                    <!-- <RouterLink to="/" class="nav-link">Home</RouterLink>
+                    <RouterLink to="/about" class="nav-link">About</RouterLink> -->
                     
                     <button @click="logout" class="btn-logout">Sair</button>
                 </nav>

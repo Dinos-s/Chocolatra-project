@@ -28,7 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/editTrufa/{trufa}', [TrufasController::class, 'atualizar']);
     Route::delete('/trufa/{trufa}', [TrufasController::class, 'destroy']);
 
-
     // Saída
     Route::post('/logout', [AuthController::class, 'logout']);
 });

@@ -1,5 +1,5 @@
 <script setup>
-    import { ref,onMounted } from 'vue';
+    import { ref, onMounted } from 'vue';
     import api from '../services/api';
 
     const carregando = ref(true)
@@ -9,18 +9,21 @@
     const totalTrufas = ref(0)
 
     const loadDashboard = async () => {
-        carregando.value = true
 
         try {
-            const responseUsers = await api.get('/usuarios')
+                const [responseUsers, responseTrufas] = await Promise.all([
+                api.get('/usuarios'),
+                api.get('/trufas')
+            ])
             totalUsers.value = responseUsers.data.users.data.length
 
-            const responseTrufas = await api.get('/trufas')
             totalTrufas.value = responseTrufas.data.trufas.data.length
 
             apiOnline.value = true
         } catch (error) {
             apiOnline.value = false   
+        } finally {
+            carregando.value = false
         }
     }
     
@@ -45,7 +48,7 @@
 
         <div class="metric-card">
             <span class="metric-title">Status do Sistema</span>
-            <p class="metric-value" :class="apiOnline ? 'status-online' : 'status-offline'">{{ apiOnline ? 'Online' : 'Offline' }}</p>
+            <p class="metric-value" :class="apiOnline ? 'status-online' : 'status-offline'">{{ carregando ? 'Verificando...' : apiOnline ? 'Online' : 'Offline' }}</p>
         </div>
     </section>
 </template>
