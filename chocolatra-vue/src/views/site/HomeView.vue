@@ -1,59 +1,34 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import SiteHeader from '../../components/SiteHeader.vue';
+import SiteFooter from '../../components/SiteFooter.vue';
 </script>
 
 <template>
     <main class="home">
 
-        <header class="home-header">
-            <div class="container">
-
-                <h1>Chocolatra</h1>
-
-                <nav>
-                    <RouterLink to="/">Início</RouterLink>
-                    <RouterLink to="/trufas">Trufas</RouterLink>
-
-                    <RouterLink to="/sobre">Sobre</RouterLink>
-                </nav>
-
-            </div>
-        </header>
-
+        <SiteHeader />
 
         <section class="hero">
-
             <div class="container hero-content">
-
                 <div>
                     <h2>Trufas feitas para adoçar o seu dia 🍫</h2>
-
                     <p>
                         Escolha suas trufas favoritas e faça seu pedido
                         de forma rápida e fácil.
                     </p>
 
-                    <RouterLink
-                        to="/trufas"
-                        class="btn-primary"
-                    >
+                    <RouterLink to="/catalogo" class="btn-primary">
                         Ver trufas
                     </RouterLink>
                 </div>
-
             </div>
-
         </section>
 
-
         <section class="about">
-
             <div class="container">
-
                 <h2>Por que escolher a Chocolatra?</h2>
-
                 <div class="features">
-
                     <div class="feature">
                         <h3>🍫 Trufas deliciosas</h3>
                         <p>
@@ -70,29 +45,18 @@ import { RouterLink } from 'vue-router'
 
                     <div class="feature">
                         <h3>❤️ Feito com carinho</h3>
-                        <p>
-                            Produtos preparados com cuidado.
-                        </p>
+                        <p>Produtos preparados com cuidado.</p>
                     </div>
-
                 </div>
-
             </div>
-
         </section>
 
-
-        <footer>
-            <p>
-                © {{ new Date().getFullYear() }} Chocolatra
-            </p>
-        </footer>
+        <SiteFooter />
 
     </main>
 </template>
 
 <style scoped>
-
 .home {
     min-height: 100vh;
     background-color: #f8f5f0;
@@ -100,60 +64,14 @@ import { RouterLink } from 'vue-router'
     line-height: 1.6;
 }
 
-
 /* CONTAINER */
-
 .container {
     width: min(800px, 100%);
     margin: 0 auto;
     padding: 0 20px;
 }
 
-
-/* HEADER */
-
-.home-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 30px 0 20px;
-    border-bottom: 2px solid #d4a574;
-}
-
-.home-header .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.home-header h1 {
-    margin: 0;
-    color: #8b4513;
-    font-size: 2.2rem;
-    font-weight: 700;
-}
-
-.home-header nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 25px;
-}
-
-.home-header nav a {
-    color: #5d4a36;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.home-header nav a:hover {
-    color: #8b4513;
-}
-
-
 /* HERO */
-
 .hero {
     margin-bottom: 30px;
 }
@@ -179,9 +97,7 @@ import { RouterLink } from 'vue-router'
     max-width: 550px;
 }
 
-
 /* BOTÃO PRINCIPAL */
-
 .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -212,9 +128,7 @@ import { RouterLink } from 'vue-router'
     transform: translateY(-1px);
 }
 
-
 /* SOBRE */
-
 .about {
     margin-bottom: 30px;
 }
@@ -238,9 +152,7 @@ import { RouterLink } from 'vue-router'
     border-bottom: 1px solid #e8d9c5;
 }
 
-
 /* CARDS */
-
 .features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -263,64 +175,27 @@ import { RouterLink } from 'vue-router'
 
 .feature:hover {
     transform: translateY(-2px);
-
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .feature h3 {
     margin: 0 0 8px;
-
     color: #5d4a36;
-
     font-size: 1rem;
 }
 
 .feature p {
     margin: 0;
-
     color: #8a7866;
-
     font-size: 0.9rem;
 }
-
-
-/* FOOTER */
-
-footer {
-    padding: 25px 0 35px;
-
-    text-align: center;
-
-    color: #8a7866;
-
-    font-size: 0.9rem;
-}
-
 
 /* RESPONSIVO */
-
 @media (max-width: 768px) {
 
     .container {
         width: 100%;
         padding: 0 15px;
-    }
-
-    .home-header {
-        padding-top: 25px;
-    }
-
-    .home-header h1 {
-        font-size: 2rem;
-    }
-
-    .home-header nav {
-        gap: 18px;
-        flex-wrap: wrap;
-    }
-
-    .hero-content {
-        padding: 30px 25px;
     }
 
     .hero h2 {
@@ -344,19 +219,8 @@ footer {
     }
 }
 
-
 /* CELULAR PEQUENO */
-
 @media (max-width: 480px) {
-
-    .home-header h1 {
-        font-size: 1.8rem;
-    }
-
-    .home-header nav {
-        gap: 12px;
-        font-size: 0.9rem;
-    }
 
     .hero-content {
         padding: 25px 20px;
@@ -373,7 +237,5 @@ footer {
     .btn-primary {
         width: 100%;
     }
-
 }
-
 </style>

@@ -10,7 +10,7 @@ class TrufasController extends Controller
 {
     public function trufas(): JsonResponse
     {
-        $trufas = Trufa::orderBy('sabor', 'asc')->paginate(10);
+        $trufas = Trufa::orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json([
             'status' => true,
