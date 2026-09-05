@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trufas', function (Blueprint $table) {
             $table->id();
-            $table->string('sabor');
+            $table->integer('id_sabor');
             $table->integer('quantidade');
             $table->timestamps();
         });

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sabor_trufas', function (Blueprint $table) {
             $table->id();
-            $table->string('sabor');
+            $table->string('sabor')->unique();
             $table->timestamps();
         });
     }

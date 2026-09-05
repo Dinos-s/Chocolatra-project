@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Trufa extends Model
 {
@@ -13,4 +14,9 @@ class Trufa extends Model
         'id_sabor',
         'quantidade',
     ];
+
+    public function sabor(): BelongsTo
+    {
+        return $this->belongsTo(Sabor::class, 'id_sabor');
+    }
 }

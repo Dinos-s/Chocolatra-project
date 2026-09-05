@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoque_trufas', function (Blueprint $table) {
-            $table->id();
-            $table->integer('id_sabor');
-            $table->integer('quantidade');
-            $table->float('preco')->nullable();
-            $table->timestamps();
+        Schema::table('estoque_trufas', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_sabor')->change();
+
+            $table->foreign('id_sabor')->references('id')->on('sabor_trufas');
         });
     }
 
@@ -25,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoque_trufas');
+        Schema::table('estoque_trufas', function (Blueprint $table) {
+            $table->dropForeign(['id_sabor']);
+        });
     }
 };
