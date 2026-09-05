@@ -147,208 +147,206 @@ onMounted(() => {
 
 <style scoped>
 
-.trufas-page {
-    min-height: 100vh;
-    background-color: #f8f5f0;
-    color: #4a3c31;
-}
-
-/* CATÁLOGO */
-
-.catalogo {
-    width: min(1100px, 100%);
-    margin: 0 auto;
-    padding: 45px 20px;
-}
-
-.catalogo-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.catalogo-header h1 {
-    margin: 0 0 10px;
-
-    color: #8b4513;
-    font-size: 2.2rem;
-}
-
-.catalogo-header p {
-    margin: 0;
-
-    color: #8a7866;
-}
-
-/* GRID */
-
-.trufas-grid {
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 25px;
-}
-
-/* CARD */
-
-.trufa-card {
-    overflow: hidden;
-
-    background-color: white;
-
-    border-radius: 12px;
-
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.trufa-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-}
-
-/* IMAGEM */
-
-.trufa-imagem {
-    height: 190px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #f0e6d8;
-}
-
-.trufa-imagem span {
-    font-size: 5rem;
-}
-
-/* INFORMAÇÕES */
-
-.trufa-info {
-    padding: 20px;
-}
-
-.trufa-info h2 {
-    margin: 0 0 8px;
-
-    color: #5d4a36;
-    font-size: 1.25rem;
-}
-
-.descricao {
-    min-height: 45px;
-
-    margin: 0 0 20px;
-
-    color: #8a7866;
-    font-size: 0.9rem;
-}
-
-/* RODAPÉ DO CARD */
-
-.trufa-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-}
-
-.trufa-footer strong {
-    color: #8b4513;
-    font-size: 1.15rem;
-}
-
-/* BOTÃO */
-
-.btn-adicionar {
-    border: none;
-
-    background-color: #8b4513;
-    color: white;
-
-    padding: 10px 16px;
-
-    border-radius: 8px;
-
-    font-size: 0.9rem;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: background-color 0.2s ease;
-}
-
-.btn-adicionar:hover {
-    background-color: #6b3410;
-}
-
-/* ESTADOS */
-
-.estado {
-    padding: 50px 20px;
-
-    text-align: center;
-
-    color: #8a7866;
-}
-
-.estado.erro {
-    color: #8b4513;
-}
-
-.estado button {
-    margin-top: 15px;
-
-    padding: 10px 18px;
-
-    border: none;
-    border-radius: 8px;
-
-    background-color: #8b4513;
-    color: white;
-
-    cursor: pointer;
-}
-
-/* RESPONSIVO */
-
-@media (max-width: 900px) {
-    .trufas-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 650px) {
-
-    .header-content {
-        flex-direction: column;
+    .trufas-page {
+        min-height: 100vh;
+        background-color: #f8f5f0;
+        color: #4a3c31;
     }
 
-    nav {
-        gap: 15px;
-    }
+    /* CATÁLOGO */
 
     .catalogo {
-        padding: 30px 15px;
+        width: min(1100px, 100%);
+        margin: 0 auto;
+        padding: 45px 20px;
+    }
+
+    .catalogo-header {
+        text-align: center;
+        margin-bottom: 40px;
     }
 
     .catalogo-header h1 {
-        font-size: 1.8rem;
+        margin: 0 0 10px;
+
+        color: #8b4513;
+        font-size: 2.2rem;
     }
+
+    .catalogo-header p {
+        margin: 0;
+
+        color: #8a7866;
+    }
+
+    /* GRID */
 
     .trufas-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 25px;
     }
+
+    /* CARD */
+
+    .trufa-card {
+        overflow: hidden;
+
+        background-color: white;
+
+        border-radius: 12px;
+
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .trufa-card:hover {
+        transform: translateY(-4px);
+
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    /* IMAGEM */
 
     .trufa-imagem {
-        height: 210px;
-    }
-}
+        height: 190px;
 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background-color: #f0e6d8;
+    }
+
+    .trufa-imagem span {
+        font-size: 5rem;
+    }
+
+    /* INFORMAÇÕES */
+
+    .trufa-info {
+        padding: 20px;
+    }
+
+    .trufa-info h2 {
+        margin: 0 0 8px;
+
+        color: #5d4a36;
+        font-size: 1.25rem;
+    }
+
+    .descricao {
+        min-height: 45px;
+
+        margin: 0 0 20px;
+
+        color: #8a7866;
+        font-size: 0.9rem;
+    }
+
+    /* RODAPÉ DO CARD */
+
+    .trufa-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
+    .trufa-footer strong {
+        color: #8b4513;
+        font-size: 1.15rem;
+    }
+
+    /* BOTÃO */
+
+    .btn-adicionar {
+        border: none;
+
+        background-color: #8b4513;
+        color: white;
+
+        padding: 10px 16px;
+
+        border-radius: 8px;
+
+        font-size: 0.9rem;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-adicionar:hover {
+        background-color: #6b3410;
+    }
+
+    /* ESTADOS */
+
+    .estado {
+        padding: 50px 20px;
+
+        text-align: center;
+
+        color: #8a7866;
+    }
+
+    .estado.erro {
+        color: #8b4513;
+    }
+
+    .estado button {
+        margin-top: 15px;
+
+        padding: 10px 18px;
+
+        border: none;
+        border-radius: 8px;
+
+        background-color: #8b4513;
+        color: white;
+
+        cursor: pointer;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 900px) {
+        .trufas-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+
+        .header-content {
+            flex-direction: column;
+        }
+
+        nav {
+            gap: 15px;
+        }
+
+        .catalogo {
+            padding: 30px 15px;
+        }
+
+        .catalogo-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .trufas-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trufa-imagem {
+            height: 210px;
+        }
+    }
 </style>
