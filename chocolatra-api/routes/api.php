@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // rotas de trufas
     Route::get('/trufas', [TrufasController::class, 'trufas']);
+    Route::post('/sabor', [TrufasController::class, 'sabor']);
     Route::post('/novaTrufa', [TrufasController::class, 'novaTrufa']);
     Route::put('/editTrufa/{trufa}', [TrufasController::class, 'atualizar']);
     Route::delete('/trufa/{trufa}', [TrufasController::class, 'destroy']);

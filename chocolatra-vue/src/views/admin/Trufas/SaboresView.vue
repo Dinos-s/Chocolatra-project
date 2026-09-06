@@ -1,65 +1,45 @@
 <script setup>
-    import { computed, onMounted, ref } from 'vue';
-    import AlertMessage from '../../../components/AlertMessage.vue';
-    import api from '../../../services/api.js';
+    import { ref, onMounted, computed } from 'vue';
+    import api from '../../../services/api';
+import AlertMessage from '../../../components/AlertMessage.vue';
 
-    // Estados da Tabela e Modos de Operação
-    const trufas = ref([]);
     const sabores = ref([]);
 
     const carregando = ref(true);
     const editandoId = ref(null); // null = Inserção/Novo, número/string = Edição
 
     // Campos do Formulário
-    const idSabor = ref('');
-    const quantidade = ref('');
-    const preco = ref('');
+    const sabor = ref('');
     const msgError = ref('');
     const msgSucesso = ref('');
 
-    const formatarData = (data) => {
-        if (!data) return '-';
-
-        return new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'America/Sao_Paulo'
-        }).format(new Date(data));
-    };
-
     // Alternar o texto de títulos e botões dinamicamente
-    const tituloFormulario = computed(() => editandoId.value ? 'Edição de Trufa' : 'Inserção de Nova Trufa');
+    const tituloFormulario = computed(() => editandoId.value ? 'Edição de Sabor' : 'Inserção de Novo Sabor');
 
-    const textoBotao = computed(() => editandoId.value ? 'Salvar Alterações' : 'Cadastrar Trufa');
+    const textoBotao = computed(() => editandoId.value ? 'Salvar Alterações' : 'Cadastrar Sabor');
 
-    // Buscar trufas ao carregar a tabela
-    const buscarTrufas = async () => {
+    // Buscar sabores ao carregar a tabela
+    const buscarSabores = async () => {
         try {
             carregando.value = true;
-            const response = await api.get('/trufas');
-            console.log(response.data.trufas.data);
-            console.log(response.data.sabores);
+            const response = await api.get('/sabores');
+            console.log(response.data.sabores.data);
 
-            trufas.value = response.data.trufas.data ?? response.data.trufas;
-            sabores.value = response.data.sabores ?? response.data.sabores.data;
+            sabores.value = response.data.sabores.data ?? response.data.sabores;
         } catch (error) {
-            console.error('Erro ao buscar trufas:', error);
+            console.error('Erro ao buscar sabores:', error);
         } finally {
             carregando.value = false;
         }
     };
 
     onMounted(() => {
-        buscarTrufas();
+        buscarSabores();
     });
 
-    // Preparar formulário para preencher com dados da trufa selecionada
-    const selecionarParaEditar = (trufa) => {
-        editandoId.value = trufa.id;
-        idSabor.value = trufa.sabor;
-        quantidade.value = trufa.quantidade;
-        // preco.value = Number(trufa.preco).toFixed(2).replace('.', ',');
+    const selecionarParaEditar = (sabor) => {
+        editandoId.value = sabor.id;
+        sabor.value = sabor.sabor;
         msgError.value = '';
         msgSucesso.value = '';
 
@@ -67,63 +47,56 @@
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
-    // Limpar e resetar formulário para modo inserção
     const cancelarEdicao = () => {
         editandoId.value = null;
-        idSabor.value = '';
-        quantidade.value = '';
-        // preco.value = '';
+        sabor.value = '';
         msgError.value = '';
         msgSucesso.value = '';
     }
 
-    const salvarTrufa = async () => {
+    const salvarSabor = async () => {
         msgError.value = '';
         msgSucesso.value = '';
 
         try {
             if (editandoId.value) {
                 // Lógica de Edição (PUT/PATCH)
-                const payload = { 
-                    id_sabor: idSabor.value,
-                    quantidade: Number(quantidade.value),
-                    // preco: Number(preco.value.replace(',', '.'))
+                const payload = {
+                    sabor: sabor.value
                 };
 
-                await api.put(`/editTrufa/${editandoId.value}`, payload);
+                await api.put(`/editSabor/${editandoId.value}`, payload);
 
-                await buscarTrufas();
-                msgSucesso.value = 'Trufa editada com sucesso.';
+                await buscarSabores();
+                msgSucesso.value = 'Sabor editado com sucesso.';
             } else {
-                await api.post('/novaTrufa', {
-                    id_sabor: idSabor.value,
-                    quantidade: Number(quantidade.value),
-                    // preco: Number(preco.value.replace(',', '.'))
+                await api.post('/novoSabor', {
+                    sabor: sabor.value
                 });
 
-                msgSucesso.value = 'Trufa salva com sucesso.';
+                msgSucesso.value = 'Sabor salvo com sucesso.';
             }
 
-            await buscarTrufas();
+            await buscarSabores();
             cancelarEdicao();
         } catch (error) {
             if (error.response?.status === 422) {
                 msgError.value = 'Verifique os campos e tente novamente.';
                 return
             }
-            msgError.value = 'Erro ao salvar a trufa.';
+            msgError.value = 'Erro ao salvar o sabor.';
         }
     }
 
-    const excluirTrufa = async (id) => {
-        if (!confirm('Deseja realmente excluir esta trufa?')) return;
+    const excluirSabor = async (id) => {
+        if (!confirm('Deseja realmente excluir este sabor?')) return;
 
         try {
-            await api.delete(`/trufa/${id}`);
-            msgSucesso.value = 'Trufa excluida com sucesso.';
-            buscarTrufas();
+            await api.delete(`/sabor/${id}`);
+            msgSucesso.value = 'Sabor excluido com sucesso.';
+            buscarSabores();
         } catch (error) {
-            msgError.value = 'Erro ao excluir a trufa.';
+            msgError.value = 'Erro ao excluir o sabor.';
         }
     }
 </script>
@@ -131,10 +104,10 @@
 <template>
     <div class="content-wrapper">
 
-        <!-- SEÇÃO 1: TABELA DE TRUFAS -->
+        <!-- SEÇÃO 1: TABELA DE SABORES -->
         <div class="card mb-6">
             <div class="card-header-flex">
-                <h2 class="section-title">Trufas Cadastradas</h2>
+                <h2 class="section-title">Sabores Cadastrados</h2>
             </div>
 
             <div class="table-responsive">
@@ -142,8 +115,6 @@
                     <thead>
                         <tr>
                             <th>Sabor</th>
-                            <th>Quantidade</th>
-                            <th>Data de Cadastro</th>
                             <th class="text-right">Ações</th>
                         </tr>
                     </thead>
@@ -151,19 +122,16 @@
                         <tr v-if="carregando">
                             <td colspan="3" class="text-center py-4 text-slate-500">Carregando registros...</td>
                         </tr>
-                        <tr v-else-if="trufas.length === 0">
-                            <td colspan="3" class="text-center py-4 text-slate-500">Nenhuma trufa cadastrada.</td>
+                        <tr v-else-if="sabores.length === 0">
+                            <td colspan="3" class="text-center py-4 text-slate-500">Nenhum sabor cadastrado.</td>
                         </tr>
-                        <tr v-for="trufa in trufas" :key="trufa.id" :class="{ 'row-selected': editandoId === trufa.id }">
-                            <td class="font-medium text-slate-800">{{ trufa.sabor }}</td>
-                            <td class="text-slate-600">{{ trufa.quantidade }}</td>
-                            <td class="text-slate-600">{{ formatarData(trufa.created_at) }}</td>
-                            <!-- <td class="text-slate-600">R$ {{ Number(trufa.preco).toFixed(2).replace('.', ',') }}</td> -->
+                        <tr v-for="sabor in sabores" :key="sabor.id" :class="{ 'row-selected': editandoId === sabor.id }">
+                            <td class="font-medium text-slate-800">{{ sabor.sabor }}</td>
                             <td class="text-right action-buttons">
-                                <button @click="selecionarParaEditar(trufa)" class="btn-icon btn-edit" title="Editar">
+                                <button @click="selecionarParaEditar(sabor)" class="btn-icon btn-edit" title="Editar">
                                     ✏️
                                 </button>
-                                <button @click="excluirTrufa(trufa.id)" class="btn-icon btn-delete" title="Excluir">
+                                <button @click="excluirSabor(sabor.id)" class="btn-icon btn-delete" title="Excluir">
                                     🗑️
                                 </button>
                             </td>
@@ -173,7 +141,7 @@
             </div>
         </div>
 
-        <!-- SEÇÃO 2: CADASTRO DE TRUFAS -->
+        <!-- SEÇÃO 2: FORMULARIO DE CADASTRO DE SABORES -->
         <div class="card form-card">
             <div class="form-header-row">
                 <h2 class="section-title">{{ tituloFormulario }}</h2>
@@ -185,38 +153,12 @@
             <AlertMessage :message="msgError" type="danger" />
             <AlertMessage :message="msgSucesso" type="success" />
 
-            <form @submit.prevent="salvarTrufa" class="form">
+            <form @submit.prevent="salvarSabor" class="form">
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="sabor">Sabor*</label>
-                        <select id="sabor" v-model="idSabor" required class="form-input">
-
-                            <option value="" disabled>
-                                Selecione um sabor
-                            </option>
-
-                            <option
-                                v-for="sabor in sabores"
-                                :key="sabor.id"
-                                :value="sabor.id"
-                            >
-                                {{ sabor.sabor }}
-                            </option>
-                        </select>
+                        <input type="text" id="sabor" v-model="sabor" placeholder="Informe um sabor" required class="form-input">
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="quantidade">Quantidade*</label>
-                        <input type="number" min="1" id="quantidade" v-model="quantidade" placeholder="Informe uma quantidade"
-                            required class="form-input">
-                    </div>
-
-                    <!-- Preço -->
-                    <!-- <div class="form-group">
-                        <label class="form-label" for="preco">Preco R$*</label>
-                        <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required
-                            class="form-input">
-                    </div> -->
                 </div>
 
                 <div class="form-actions">

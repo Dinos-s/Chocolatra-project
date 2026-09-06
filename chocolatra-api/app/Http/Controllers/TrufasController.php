@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sabor;
 use App\Models\Trufa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,26 +11,64 @@ class TrufasController extends Controller
 {
     public function trufas(): JsonResponse
     {
-        $trufas = Trufa::orderBy('created_at', 'desc')->paginate(10);
+        // $trufas = Trufa::orderBy('created_at', 'desc')->paginate(10);
+        $trufas = Trufa::query()
+        ->select('trufas.*', 'sabor_trufas.sabor')
+        ->join('sabor_trufas', 'sabor_trufas.id', '=', 'trufas.id_sabor')
+        ->orderBy('trufas.created_at', 'desc')
+        ->paginate(10);
+
+        $sabores = Sabor::orderBy('sabor', 'asc')->get();
 
         return response()->json([
             'status' => true,
-            'trufas' => $trufas
+            'trufas' => $trufas,
+            'sabores' => $sabores
+        ], 200);
+    }
+
+    public function sabores(): JsonResponse
+    {
+        $sabores = Sabor::orderBy('sabor', 'asc')->paginate(10);
+
+        return response()->json([
+            'status' => true,
+            'sabores' => $sabores
+        ], 200);
+    }
+
+    public function sabor(Request $request): JsonResponse
+    {
+        $request->validate([
+            'sabor' => 'required|string'
+        ]);
+
+        $sabor = Sabor::create(['sabor' => $request->sabor]);
+
+        return response()->json([
+            'status' => true,
+            'sabor' => $sabor
         ], 200);
     }
 
     public function novaTrufa(Request $resquest): JsonResponse
     {
         $resquest->validate([
-            'sabor' => 'required|string|max:255',
-            'quantidade' => 'required|integer|max:255',
-            // 'preco' => 'required|numeric|min:0',
+            'id_sabor' => 'required|integer',
+            'quantidade' => 'required|integer',
         ]);
 
+        $sabor = Sabor::find($resquest->id_sabor);
+
+        if (!$sabor) {
+            return response()->json([
+                'message' => 'Sabor não encontrado'
+            ], 404);
+        }
+
         $trufa = Trufa::create([
-            'sabor' => $resquest->sabor,
+            'id_sabor' => $resquest->id_sabor,
             'quantidade' => $resquest->quantidade,
-            // 'preco' => $resquest->preco
         ]);
 
         return response()->json([

@@ -59,6 +59,11 @@ const router = createRouter({
           name: 'trufas',
           component: () => import('../views/admin/Trufas/TrufasView.vue'),
         },
+        {
+          path: 'sabores/new',
+          name: 'sabores',
+          component: () => import('../views/admin/Trufas/SaboresView.vue'),
+        }
       ],
     },
   ],

@@ -72,8 +72,9 @@
                 <!-- Submenu -->
                 <div class="submenu" v-if="menuAberto === 'trufas'">
                     <RouterLink :to="{name:'trufas'}" class="submenu-link" active-class="active">Trufas</RouterLink>
-                </div>
                 
+                    <RouterLink :to="{name:'sabores'}" class="submenu-link" active-class="active">Sabores</RouterLink>
+                </div>
              </div>
         </nav>
 
