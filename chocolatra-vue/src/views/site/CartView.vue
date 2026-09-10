@@ -3,8 +3,15 @@
     import SiteFooter from '../../components/SiteFooter.vue';
     import SiteHeader from '../../components/SiteHeader.vue';
     import { computed, onMounted, ref } from 'vue';
+    import api from '../../services/api';
 
     const carrinho = ref([]);
+
+    // pedido
+    const qrCode = ref(null)
+    const pedidoId = ref(null)
+    const finalizando = ref(false)
+    let intervaloPolling = null
 
     const carregarCarrinho = () => {
         carrinho.value = JSON.parse(localStorage.getItem('carrinho')) || []
@@ -56,6 +63,39 @@
     onMounted(() => {
         carregarCarrinho()
     })
+
+    const finalizarCompra = async () => {
+        finalizando.value = true
+
+        try {
+            const itens = carrinho.value.map(item => ({
+                id_sabor: item.id,
+                quantidade: item.quantidade
+            }))
+
+            const { data } = await api.post('/pedidos', { itens })
+
+            pedidoId.value = data.pedido.id
+            qrCode.value = data.qr_code
+
+            intervaloPolling = setInterval(verificarPedido, 3000)
+        } catch (e) {
+            console.error(e);
+        } finally {
+            finalizando.value = false
+        }
+    }
+
+    const verificarPedido = async () => {
+        const { data } = await api.get(`/pedidos/${pedidoId.value}`)
+
+        if (data.pedido.status === 'pago') {
+            clearInterval(intervaloPolling)
+            localStorage.removeItem('carrinho')
+            carrinho.value = []
+            qrCode.value = null
+        }
+    }
 </script>
 
 <template>
@@ -141,9 +181,14 @@
                         <strong>{{ formatarPreco(total) }}</strong>
                     </div>
 
-                    <button class="btn-finalizar">
+                    <button class="btn-finalizar" @click="finalizarCompra" :disabled="fianalizando">
                         Finalizar compra
                     </button>
+
+                    <div v-if="qrCode" class="modal-qrcode">
+                        <img :src="qrCode" alt="QR Code de pagamento" />
+                        <p>Escaneie para pagar. Assim que o pagamento for confirmado, o pedido é atualizado automaticamente.</p>
+                    </div>
 
                     <RouterLink
                         to="/catalogo"

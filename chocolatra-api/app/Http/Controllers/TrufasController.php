@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estoque;
 use App\Models\Sabor;
 use App\Models\Trufa;
 use Illuminate\Http\JsonResponse;
@@ -27,30 +28,6 @@ class TrufasController extends Controller
         ], 200);
     }
 
-    public function sabores(): JsonResponse
-    {
-        $sabores = Sabor::orderBy('sabor', 'asc')->paginate(10);
-
-        return response()->json([
-            'status' => true,
-            'sabores' => $sabores
-        ], 200);
-    }
-
-    public function sabor(Request $request): JsonResponse
-    {
-        $request->validate([
-            'sabor' => 'required|string'
-        ]);
-
-        $sabor = Sabor::create(['sabor' => $request->sabor]);
-
-        return response()->json([
-            'status' => true,
-            'sabor' => $sabor
-        ], 200);
-    }
-
     public function novaTrufa(Request $resquest): JsonResponse
     {
         $resquest->validate([
@@ -70,6 +47,17 @@ class TrufasController extends Controller
             'id_sabor' => $resquest->id_sabor,
             'quantidade' => $resquest->quantidade,
         ]);
+
+        $presenteEstotoque = Estoque::where('id_sabor', $resquest->id_sabor)->exists();
+
+        if (!$presenteEstotoque) {
+            Estoque::create([
+                'id_sabor' => $resquest->id_sabor,
+                'quantidade' => $resquest->quantidade,
+            ]);
+        } else {
+            Estoque::where('id_sabor', $resquest->id_sabor)->increment('quantidade', $resquest->quantidade);
+        }
 
         return response()->json([
             'message' => 'success',

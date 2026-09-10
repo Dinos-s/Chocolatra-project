@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoque_trufas', function (Blueprint $table) {
+        Schema::create('pedido_itens', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_sabor');
+            $table->foreignId('id_pedido')->constrained('pedidos')->cascadeOnDelete();
+            $table->foreignId('id_sabor')->constrained('sabor_trufas');
             $table->integer('quantidade');
-            // $table->float('preco')->nullable();
+            $table->decimal('preco_unitario', 10, 2);
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoque_trufas');
+        Schema::dropIfExists('pedido_itens');
     }
 };

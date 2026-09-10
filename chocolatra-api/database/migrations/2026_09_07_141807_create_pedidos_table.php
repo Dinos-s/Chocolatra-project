@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoque_trufas', function (Blueprint $table) {
+        Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_sabor');
-            $table->integer('quantidade');
-            // $table->float('preco')->nullable();
+            $table->foreignId('id_user')->constrained('users');
+            $table->enum('status', ['pendente', 'pago', 'cancelado'])->default('pendente');
+            $table->decimal('total', 10, 2);
+            $table->string('qr_code_payload')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoque_trufas');
+        Schema::dropIfExists('pedidos');
     }
 };
