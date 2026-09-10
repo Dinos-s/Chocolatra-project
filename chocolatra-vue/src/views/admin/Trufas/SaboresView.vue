@@ -10,6 +10,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
 
     // Campos do Formulário
     const sabor = ref('');
+    const preco = ref('');
     const msgError = ref('');
     const msgSucesso = ref('');
 
@@ -40,6 +41,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
     const selecionarParaEditar = (sabor) => {
         editandoId.value = sabor.id;
         sabor.value = sabor.sabor;
+        preco.value = Number(sabor.preco).toFixed(2).replace('.', ',');
         msgError.value = '';
         msgSucesso.value = '';
 
@@ -62,7 +64,8 @@ import AlertMessage from '../../../components/AlertMessage.vue';
             if (editandoId.value) {
                 // Lógica de Edição (PUT/PATCH)
                 const payload = {
-                    sabor: sabor.value
+                    sabor: sabor.value,
+                    preco: Number(preco.value.replace(',', '.'))
                 };
 
                 await api.put(`/editSabor/${editandoId.value}`, payload);
@@ -71,7 +74,8 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                 msgSucesso.value = 'Sabor editado com sucesso.';
             } else {
                 await api.post('/novoSabor', {
-                    sabor: sabor.value
+                    sabor: sabor.value,
+                    preco: Number(preco.value.replace(',', '.'))
                 });
 
                 msgSucesso.value = 'Sabor salvo com sucesso.';
@@ -160,6 +164,11 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                         <input type="text" id="sabor" v-model="sabor" placeholder="Informe um sabor" required class="form-input">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="preco">Preco R$*</label>
+                    <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required class="form-input">
+                </div> 
 
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">

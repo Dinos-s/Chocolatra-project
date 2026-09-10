@@ -21,10 +21,14 @@ class SaboresController extends Controller {
     public function novoSabor(Request $request): JsonResponse
     {
         $request->validate([
-            'sabor' => 'required|string'
+            'sabor' => 'required|string',
+            'preco' => 'required',
         ]);
 
-        $sabor = Sabor::create(['sabor' => $request->sabor]);
+        $sabor = Sabor::create([
+            'sabor' => $request->sabor,
+            'preco' => $request->preco
+        ]);
 
         return response()->json([
             'status' => true,
@@ -44,6 +48,7 @@ class SaboresController extends Controller {
 
         $atualizar = [
             'sabor' => $request->sabor,
+            'preco' => $request->preco
         ];
 
         $sabor->update($atualizar);

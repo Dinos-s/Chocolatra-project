@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sabor_trufas', function (Blueprint $table) {
             $table->id();
             $table->string('sabor')->unique();
+            $table->decimal('preco', 10, 2);
             $table->timestamps();
         });
     }
