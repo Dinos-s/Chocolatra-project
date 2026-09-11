@@ -70,6 +70,7 @@ class PedidoController extends Controller
                 'id_pedido' => $pedido->id,
                 'total' => $pedido->total,
                 'qr_code' => 'data:image/svg+xml;base64,' . $qrCodeBase64,   // <-- mime type mudou
+                'qr_code_payload' => $payload
             ], 201);
         });
     }

@@ -2,15 +2,18 @@
     import { RouterLink } from 'vue-router';
     import SiteFooter from '../../components/SiteFooter.vue';
     import SiteHeader from '../../components/SiteHeader.vue';
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, onMounted, onUnmounted, ref } from 'vue';
     import api from '../../services/api';
 
     const carrinho = ref([]);
 
     // pedido
     const qrCode = ref(null)
+    const pixPayload = ref(null)
     const pedidoId = ref(null)
     const finalizando = ref(false)
+    const modal = ref(false)
+    const copiado = ref(false)
     let intervaloPolling = null
 
     const carregarCarrinho = () => {
@@ -67,6 +70,11 @@
     const finalizarCompra = async () => {
         finalizando.value = true
 
+        if (intervaloPolling){
+            clearInterval(intervaloPolling)
+            intervaloPolling = null
+        }
+
         try {
             const itens = carrinho.value.map(item => ({
                 id_sabor: item.id,
@@ -78,6 +86,9 @@
             console.log(data)
             pedidoId.value = data.id_pedido
             qrCode.value = data.qr_code
+            pixPayload.value = data.pix_payload
+
+            modal.value = true
 
             intervaloPolling = setInterval(verificarPedido, 3000)
         } catch (e) {
@@ -95,8 +106,28 @@
             localStorage.removeItem('carrinho')
             carrinho.value = []
             qrCode.value = null
+            modal.value = false
         }
     }
+
+    const fecharModal = () => {
+        modal.value = false
+    }
+
+    const copiarPix = async () => {
+        try {
+            await navigator.clipboard.writeText(pixPayload.value)
+            copiado.value = true
+        } catch (e) {
+            console.error('Não foi possível copiar: ', e)
+        }
+    }
+
+    onUnmounted(() => {
+        if (intervaloPolling){
+            clearInterval(intervaloPolling)
+        }
+    })
 </script>
 
 <template>
@@ -186,10 +217,10 @@
                         Finalizar compra
                     </button>
 
-                    <div v-if="qrCode" class="modal-qrcode">
+                    <!-- <div v-if="qrCode" class="modal-qrcode">
                         <img :src="qrCode" alt="QR Code de pagamento" />
                         <p>Escaneie para pagar. Assim que o pagamento for confirmado, o pedido é atualizado automaticamente.</p>
-                    </div>
+                    </div> -->
 
                     <RouterLink
                         to="/catalogo"
@@ -200,6 +231,23 @@
                 </aside>
             </section>
         </main>
+
+        <Teleport to="body">
+            <div v-if="modal" class="modal-overlay" @click.self="fecharModal">
+                <div class="modal-conteudo">
+                    <button class="modal-fechar" @click="fecharModal" aria-label="Fecha">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <img :src="qrCode" alt="QR Code de pagamento" class="modal-qrcode-img"/>
+
+                    <button class="btn-copiar-pix" @click="copiarPix">
+                        <i class="fa-solid fa-copy"></i>
+                        {{ copiado ? 'Código Copiado!' : 'Copiar PIX' }}
+                    </button>
+                </div>
+            </div>
+        </Teleport>
 
         <SiteFooter />
     </div>
@@ -494,5 +542,101 @@
             grid-column: 2;
             align-items: flex-start;
         }
+    }
+</style>
+
+<!-- Estilo do modal -->
+<style>
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+    }
+
+    .modal-conteudo {
+        position: relative;
+
+        width: min(380px, 100%);
+        padding: 35px 30px;
+
+        background-color: #fff;
+        border-radius: 16px;
+        text-align: center;
+
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-fechar {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+
+        width: 32px;
+        height: 32px;
+
+        border: none;
+        border-radius: 50%;
+        background-color: #f0e6d8;
+        color: #8b4513;
+
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    .modal-conteudo h2 {
+        margin: 0 0 8px;
+        color: #8b4513;
+        font-size: 1.4rem;
+    }
+
+    .modal-subtitulo {
+        margin: 0 0 20px;
+        color: #8a7866;
+        font-size: 0.9rem;
+    }
+
+    .modal-qrcode-img {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    .btn-copiar-pix {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        padding: 12px 16px;
+
+        border: 1px solid #8b4513;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #8b4513;
+
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-copiar-pix:hover {
+        background-color: #f0e6d8;
+    }
+
+    .modal-aviso {
+        margin: 18px 0 0;
+        color: #8a7866;
+        font-size: 0.8rem;
     }
 </style>
