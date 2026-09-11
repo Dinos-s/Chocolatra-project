@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estoque;
 use App\Models\Pedido;
+use App\Models\Sabor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class PedidoController extends Controller
             foreach ($request->itens as $item) {
                 // Evita condições de corrida no estoque
                 $estoque = Estoque::where('id_sabor', $item['id_sabor'])->lockForUpdate()->first();
+                $sabor = Sabor::find($item['id_sabor']);
 
                 if (!$estoque || $estoque->quantidade < $item['quantidade']) {
                     return response()->json([
@@ -35,13 +37,13 @@ class PedidoController extends Controller
                     ], 422);
                 }
 
-                $subtotal = $item['quantidade'] * $estoque->preco;
+                $subtotal = $item['quantidade'] * $sabor->preco;
                 $total += $subtotal;
 
                 $itensValidados[] = [
                     'id_sabor' => $item['id_sabor'],
                     'quantidade' => $item['quantidade'],
-                    'preco_unitario' => $estoque->preco,
+                    'preco_unitario' => $sabor->preco,
                 ];
             }
 
@@ -56,16 +58,18 @@ class PedidoController extends Controller
             }
 
             // payloads para qr code com gateway ou link indentificador
-            $payload = route ('pedidos.confirmar', $pedido->id);
+            $payload = route('pedidos.confirmar', $pedido->id);
             $pedido->update(['qr_code_payload' => $payload]);
 
-            $qrCodeBase64 = base64_encode(QrCode::format('png')->size(300)->generate($payload));
+            // gera em SVG em vez de PNG -> não depende da extensão Imagick
+            $qrCodeSvg = QrCode::format('svg')->size(300)->generate($payload);
+            $qrCodeBase64 = base64_encode($qrCodeSvg);
 
             return response()->json([
                 'status' => true,
                 'id_pedido' => $pedido->id,
                 'total' => $pedido->total,
-                'qr_code' => 'data:image/png;base64,' . $qrCodeBase64,
+                'qr_code' => 'data:image/svg+xml;base64,' . $qrCodeBase64,   // <-- mime type mudou
             ], 201);
         });
     }

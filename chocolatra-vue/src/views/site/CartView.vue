@@ -75,7 +75,8 @@
 
             const { data } = await api.post('/pedidos', { itens })
 
-            pedidoId.value = data.pedido.id
+            console.log(data)
+            pedidoId.value = data.id_pedido
             qrCode.value = data.qr_code
 
             intervaloPolling = setInterval(verificarPedido, 3000)
@@ -181,7 +182,7 @@
                         <strong>{{ formatarPreco(total) }}</strong>
                     </div>
 
-                    <button class="btn-finalizar" @click="finalizarCompra" :disabled="fianalizando">
+                    <button class="btn-finalizar" @click="finalizarCompra" :disabled="finalizando">
                         Finalizar compra
                     </button>
 

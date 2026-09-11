@@ -38,10 +38,10 @@ import AlertMessage from '../../../components/AlertMessage.vue';
         buscarSabores();
     });
 
-    const selecionarParaEditar = (sabor) => {
-        editandoId.value = sabor.id;
-        sabor.value = sabor.sabor;
-        preco.value = Number(sabor.preco).toFixed(2).replace('.', ',');
+    const selecionarParaEditar = (s) => {
+        editandoId.value = s.id;
+        sabor.value = s.sabor;
+        preco.value = Number(s.preco).toFixed(2).replace('.', ',');
         msgError.value = '';
         msgSucesso.value = '';
 
@@ -52,6 +52,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
     const cancelarEdicao = () => {
         editandoId.value = null;
         sabor.value = '';
+        preco.value = '';
         msgError.value = '';
         msgSucesso.value = '';
     }
@@ -119,6 +120,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                     <thead>
                         <tr>
                             <th>Sabor</th>
+                            <th>Preço</th>
                             <th class="text-right">Ações</th>
                         </tr>
                     </thead>
@@ -131,6 +133,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                         </tr>
                         <tr v-for="sabor in sabores" :key="sabor.id" :class="{ 'row-selected': editandoId === sabor.id }">
                             <td class="font-medium text-slate-800">{{ sabor.sabor }}</td>
+                            <td class="text-slate-600">R$ {{ Number(sabor.preco).toFixed(2).replace('.', ',') }}</td>
                             <td class="text-right action-buttons">
                                 <button @click="selecionarParaEditar(sabor)" class="btn-icon btn-edit" title="Editar">
                                     ✏️
@@ -163,12 +166,13 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                         <label class="form-label" for="sabor">Sabor*</label>
                         <input type="text" id="sabor" v-model="sabor" placeholder="Informe um sabor" required class="form-input">
                     </div>
-                </div>
+                
 
-                <div class="form-group">
-                    <label class="form-label" for="preco">Preco R$*</label>
-                    <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required class="form-input">
-                </div> 
+                    <div class="form-group">
+                        <label class="form-label" for="preco">Preco R$*</label>
+                        <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required class="form-input">
+                    </div> 
+                </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">
