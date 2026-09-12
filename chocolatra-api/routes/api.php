@@ -9,9 +9,22 @@ use Illuminate\Support\Facades\Route;
 
 // rota publica
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/registro', [AuthController::class, 'registrarCliente']);
+Route::get('/trufas', [TrufasController::class, 'trufas']);
 
-// rota protegida
+// rota protegida para qualquer usuário
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', fn (Request $request) => $request->user());
+    Route::post('/logout', [AuthController::class, 'logout']); 
+
+    // rotas de pedido
+    Route::get('/pedidos', [PedidoController::class, 'store']);
+    Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
+    Route::get('/meus-pedidos', [PedidoController::class, 'meusPedidos']);
+});
+
+// rota protegida apenas para admin
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     
     // autenticação
     Route::get('/user', function (Request $request) {
@@ -25,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users/{user}', [AuthController::class, 'destroy']);
 
     // rotas de trufas
-    Route::get('/trufas', [TrufasController::class, 'trufas']);
+    // Route::get('/trufas', [TrufasController::class, 'trufas']);
     Route::post('/novaTrufa', [TrufasController::class, 'novaTrufa']);
     Route::put('/editTrufa/{trufa}', [TrufasController::class, 'atualizar']);
     Route::delete('/trufa/{trufa}', [TrufasController::class, 'destroy']);
@@ -37,12 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/sabor/{sabor}', [SaboresController::class, 'destroy']);
 
     // rotas pedidos
-    Route::post('/pedidos', [PedidoController::class, 'store']);
-    Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
+    // Route::post('/pedidos', [PedidoController::class, 'store']);
+    // Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
     Route::post('/pedidos/{pedido}/pagar', [PedidoController::class, 'confirmarPagamento'])->name('pedidos.confirmar');
-
-    // Saída
-    Route::post('/logout', [AuthController::class, 'logout']);
 });
-
-Route::get('/trufas', [TrufasController::class, 'trufas']);

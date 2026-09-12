@@ -1,7 +1,16 @@
 <script setup>
-    import { RouterLink } from 'vue-router';
-</script>
+    import { RouterLink, useRouter } from 'vue-router';
+    import { computed } from 'vue'
 
+    const router = useRouter()
+    const logado = computed(() => !!localStorage.getItem('token'))
+
+    const sair = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        router.push('/')
+    }
+</script>
 
 <template>
     <header class="page-header">
@@ -16,6 +25,10 @@
                 <RouterLink to="/cart">Carrinho</RouterLink>
 
                 <RouterLink to="/sobre" class="btn-sobre">Sobre</RouterLink>
+
+                <RouterLink v-if="logado" to="/meus-pedidos">Meus Pedidos</RouterLink>
+                <a v-if="logado" href="#" @click.prevent="sair">Sair</a>
+                <RouterLink v-else to="/login">Entrar</RouterLink>
             </nav>
         </div>
     </header>

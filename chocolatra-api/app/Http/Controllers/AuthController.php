@@ -44,18 +44,49 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|confirmed|min:8',
+            'role' => 'required|in:admin,cliente'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'role' => $request->role
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'success',
+            'user' => $user,
+            'token' => $token
+        ], 201);
+    }
+
+    // Referente ao usuário cliente
+    public function registrarCliente(Request $request): JsonResponse {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|confirmed|min:8',
+            'cpf' => 'required|string|unique:users,cpf',
+            'phone' => 'required|string'
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'cliente',
+            'cpf' => $request->cpf,
+            'phone' => $request->phone
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Cadastro realizado com sucesso',
             'user' => $user,
             'token' => $token
         ], 201);

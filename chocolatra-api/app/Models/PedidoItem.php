@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PedidoItem extends Model
 {
@@ -14,4 +15,8 @@ class PedidoItem extends Model
         'quantidade',
         'preco_unitario',
     ];
+
+    public function sabor(): BelongsTo {
+        return $this->belongsTo(Sabor::class, 'id_sabor');
+    }
 }

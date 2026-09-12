@@ -25,6 +25,7 @@ const router = createRouter({
       path: '/cart',
       name: 'carrinho',
       component: () => import('../views/site/CartView.vue'),
+      meta: { requiresAClientAuth: true },
     },
     {
       path: '/about',
@@ -34,6 +35,24 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/site/AboutView.vue'),
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/site/LoginView.vue'),
+    },
+    {
+      path: '/registro',
+      name: 'registro',
+      component: () => import('../views/site/RegistroView.vue'),
+    },
+    {
+      path: '/meus-pedidos',
+      name: 'meus-pedidos',
+      component: () => import('../views/site/MeusPedidosView.vue'),
+      meta: { requiresClienteLogin: true },
+    },
+
+    // Admin
     {
       path: '/adm',
       name: 'adm',
@@ -70,13 +89,21 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const isAuthenticated = localStorage.getItem('token')
+  const isAdminAuth = localStorage.getItem('admin_token')
+  const isClientAuth = localStorage.getItem('token')
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth && !isAdminAuth) {
     return { name: 'adm-login' }
   }
 
-  if (to.nome === 'home' && isAuthenticated) {
+  if (to.meta.requiresAClientAuth && !isClientAuth) {
+    return { 
+      name: 'login', 
+      query: { redirect: to.fullPath } 
+    }
+  }
+
+  if (to.nome === 'home' && isAdminAuth) {
     return { name: 'dashboard' }
   }
 })

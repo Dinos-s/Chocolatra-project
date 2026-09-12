@@ -22,7 +22,7 @@
 
       const token = response.data.token
 
-      localStorage.setItem('token', token)
+      localStorage.setItem('admin_token', token)
 
       router.push('/adm/dashboard')
 

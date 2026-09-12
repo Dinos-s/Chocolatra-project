@@ -118,4 +118,23 @@ class PedidoController extends Controller
             ]);
         });
     }
+
+    public function meusPedidos(Request $request): JsonResponse {
+        $query = Pedido::with('itens.sabor')->where('id_user', $request->user()->id)->orderBy('created_at', 'desc');
+
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('created_at', '>=', $request->data_inicio);
+        }
+
+        if ($request->filled('data_fim')) {
+            $query->whereDate('created_at', '<=', $request->data_fim);
+        }
+
+        $pedidos = $query->paginate(10);
+
+        return response()->json([
+            'status' => true,
+            'pedidos' => $pedidos
+        ]);
+    }
 }
