@@ -12,6 +12,7 @@ const dataFim = ref('')
 const formatarPreco = (valor) =>
     Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
+
 const carregarPedidos = async () => {
     carregando.value = true
 
@@ -67,7 +68,7 @@ onMounted(carregarPedidos)
             <div v-else class="lista-pedidos">
                 <article v-for="pedido in pedidos" :key="pedido.id" class="pedido-card">
                     <header class="pedido-card-header">
-                        <span class="pedido-numero">Pedido #{{ pedido.id }}</span>
+                        <span class="pedido-numero">Pedido</span>
                         <span :class="['status', pedido.status]">{{ pedido.status }}</span>
                         <span class="pedido-data">
                             {{ new Date(pedido.created_at).toLocaleDateString('pt-BR') }}

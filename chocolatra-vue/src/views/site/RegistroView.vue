@@ -36,12 +36,12 @@ const cadastrar = async () => {
     if(senha.value) {
         const erroSenha = validarSenha(senha.value);
         if (erroSenha) {
-            msgError.value = erroSenha;
+            erro.value = erroSenha;
             return;
         }
 
         if (senha.value !== confirmarSenha.value) {
-            msgError.value = 'As senhas devem ser iguais.';
+            erro.value = 'As senhas devem ser iguais.';
             return;
         }
     }
@@ -123,12 +123,10 @@ const validarCpf = (cpf) => {
         <SiteHeader />
         <main class="login-page">
 
-            <AlertMessage :message="erro" type="danger" />
-
             <form @submit.prevent="cadastrar" class="login-form">
                 <h1>Criar conta</h1>
-
-                <p v-if="erro" class="erro">{{ erro }}</p>
+                
+                <AlertMessage :message="erro" type="danger" />
 
                 <div class="campo">
                     <label>Nome*</label>
