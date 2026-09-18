@@ -11,7 +11,7 @@
     const loadDashboard = async () => {
 
         try {
-                const [responseUsers, responseTrufas] = await Promise.all([
+            const [responseUsers, responseTrufas] = await Promise.all([
                 api.get('/usuarios'),
                 api.get('/trufas')
             ])

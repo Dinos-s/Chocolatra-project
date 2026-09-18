@@ -7,7 +7,7 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
     const isAreaAdmin = window.location.pathname.includes('/adm')
-    const token = isAreaAdmin ? localStorage.getItem('adm_token') : localStorage.getItem('token')
+    const token = isAreaAdmin ? localStorage.getItem('admin_token') : localStorage.getItem('token')
     
     if (token) {
         config.headers.Authorization = `Bearer ${token}`

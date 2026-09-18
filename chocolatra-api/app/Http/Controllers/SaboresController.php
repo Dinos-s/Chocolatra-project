@@ -23,11 +23,19 @@ class SaboresController extends Controller {
         $request->validate([
             'sabor' => 'required|string',
             'preco' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/sabores'), $imageName);
+        }
 
         $sabor = Sabor::create([
             'sabor' => $request->sabor,
-            'preco' => $request->preco
+            'preco' => $request->preco,
+            'image' => $imageName
         ]);
 
         return response()->json([

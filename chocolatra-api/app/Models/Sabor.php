@@ -13,6 +13,7 @@ class Sabor extends Model
     protected $fillable = [
         'id',
         'sabor',
+        'image',
         'preco',
     ];
 

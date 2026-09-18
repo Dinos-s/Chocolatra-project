@@ -13,7 +13,7 @@
 
     const logout = async () => {
         await api.post('/logout')
-        localStorage.removeItem('token')
+        localStorage.removeItem('admin_token')
         router.push('/adm')
     }
 </script>

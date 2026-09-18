@@ -11,6 +11,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
     // Campos do Formulário
     const sabor = ref('');
     const preco = ref('');
+    const imgTrufa = ref('')
     const msgError = ref('');
     const msgSucesso = ref('');
 
@@ -42,6 +43,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
         editandoId.value = s.id;
         sabor.value = s.sabor;
         preco.value = Number(s.preco).toFixed(2).replace('.', ',');
+        imgTrufa.value = s.image
         msgError.value = '';
         msgSucesso.value = '';
 
@@ -53,6 +55,7 @@ import AlertMessage from '../../../components/AlertMessage.vue';
         editandoId.value = null;
         sabor.value = '';
         preco.value = '';
+        imgTrufa.value = '';
         msgError.value = '';
         msgSucesso.value = '';
     }
@@ -160,18 +163,22 @@ import AlertMessage from '../../../components/AlertMessage.vue';
             <AlertMessage :message="msgError" type="danger" />
             <AlertMessage :message="msgSucesso" type="success" />
 
-            <form @submit.prevent="salvarSabor" class="form">
+            <form @submit.prevent="salvarSabor" class="form" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="sabor">Sabor*</label>
                         <input type="text" id="sabor" v-model="sabor" placeholder="Informe um sabor" required class="form-input">
                     </div>
-                
 
                     <div class="form-group">
                         <label class="form-label" for="preco">Preco R$*</label>
                         <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required class="form-input">
                     </div> 
+
+                    <div class="form-group">
+                        <labele class="form-label" for="image">Imagem</labele>
+                        <input class="form-input" type="image" v-model="imgTrufa" alt="imagem da trufa" name="image">
+                    </div>
                 </div>
 
                 <div class="form-actions">
