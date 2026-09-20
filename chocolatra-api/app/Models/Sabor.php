@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Sabor extends Model
 {
     protected $table = 'sabor_trufas';
+    protected $appends = ['img_url'];
 
     protected $fillable = [
         'id',
@@ -25,5 +26,10 @@ class Sabor extends Model
     public function estoque(): HasOne
     {
         return $this->hasOne(Estoque::class, 'id_sabor');
+    }
+
+    public function getImgUrlAttribute(): string
+    {
+        return asset('images/sabores/' . $this->image);
     }
 }

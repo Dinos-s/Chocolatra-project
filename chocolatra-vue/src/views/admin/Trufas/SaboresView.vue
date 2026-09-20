@@ -1,7 +1,8 @@
 <script setup>
     import { ref, onMounted, computed } from 'vue';
     import api from '../../../services/api';
-import AlertMessage from '../../../components/AlertMessage.vue';
+    import AlertMessage from '../../../components/AlertMessage.vue';
+    import ImageUploadInput from '../../../components/ImageUploadInput.vue';
 
     const sabores = ref([]);
 
@@ -11,9 +12,13 @@ import AlertMessage from '../../../components/AlertMessage.vue';
     // Campos do Formulário
     const sabor = ref('');
     const preco = ref('');
-    const imgTrufa = ref('')
     const msgError = ref('');
     const msgSucesso = ref('');
+
+    // upload imagem
+    const arquivoImagem = ref(null);   // File novo selecionado (ou null)
+    const imagemAtualUrl = ref(null);  // URL da imagem já salva no banco (ao editar)
+    const imageUploadRef = ref(null);  // referência ao componente, pra poder chamar .reset()
 
     // Alternar o texto de títulos e botões dinamicamente
     const tituloFormulario = computed(() => editandoId.value ? 'Edição de Sabor' : 'Inserção de Novo Sabor');
@@ -39,25 +44,60 @@ import AlertMessage from '../../../components/AlertMessage.vue';
         buscarSabores();
     });
 
+    const selecionarImg = (event) => {
+        const file = event.target.files[0];
+ 
+        if (!file) {
+            arquivoImagem.value = null;
+            return;
+        }
+ 
+        arquivoImagem.value = file;
+ 
+        // libera a URL de preview anterior (se era um blob local) antes de criar outra
+        if (previewImg.value && previewImg.value.startsWith('blob:')) {
+            URL.revokeObjectURL(previewImg.value);
+        }
+ 
+        previewImg.value = URL.createObjectURL(file);
+    };
+
     const selecionarParaEditar = (s) => {
         editandoId.value = s.id;
         sabor.value = s.sabor;
         preco.value = Number(s.preco).toFixed(2).replace('.', ',');
-        imgTrufa.value = s.image
+        imagemAtualUrl.value = s.image ? s.img_url : null;
+        arquivoImagem.value = null;
         msgError.value = '';
         msgSucesso.value = '';
 
         // Rolar suavemente para o formulário abaixo
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        
     }
 
     const cancelarEdicao = () => {
         editandoId.value = null;
         sabor.value = '';
         preco.value = '';
-        imgTrufa.value = '';
+        arquivoImagem.value = null;
+        imagemAtualUrl.value = null;
         msgError.value = '';
         msgSucesso.value = '';
+
+        imageUploadRef.value?.reset()
+    }
+
+    const constFormData = () => {
+        const formData = new FormData();
+        formData.append('sabor', sabor.value);
+        formData.append('preco', Number(preco.value.replace(',', '.')));
+
+        if (imagemAtualUrl.value) {
+            formData.append('image', arquivoImagem.value);
+        }
+
+        return formData;
     }
 
     const salvarSabor = async () => {
@@ -65,22 +105,15 @@ import AlertMessage from '../../../components/AlertMessage.vue';
         msgSucesso.value = '';
 
         try {
+            const formData = constFormData();
             if (editandoId.value) {
-                // Lógica de Edição (PUT/PATCH)
-                const payload = {
-                    sabor: sabor.value,
-                    preco: Number(preco.value.replace(',', '.'))
-                };
+                formData.append('_method', 'PUT');
 
-                await api.put(`/editSabor/${editandoId.value}`, payload);
+                await api.post(`/editSabor/${editandoId.value}`, formData);
 
-                await buscarSabores();
                 msgSucesso.value = 'Sabor editado com sucesso.';
-            } else {
-                await api.post('/novoSabor', {
-                    sabor: sabor.value,
-                    preco: Number(preco.value.replace(',', '.'))
-                });
+            } else {                
+                await api.post('/novoSabor', formData);
 
                 msgSucesso.value = 'Sabor salvo com sucesso.';
             }
@@ -175,10 +208,34 @@ import AlertMessage from '../../../components/AlertMessage.vue';
                         <input type="text" id="preco" v-model="preco" placeholder="Informe um preco" required class="form-input">
                     </div> 
 
-                    <div class="form-group">
-                        <labele class="form-label" for="image">Imagem</labele>
-                        <input class="form-input" type="image" v-model="imgTrufa" alt="imagem da trufa" name="image">
-                    </div>
+                    <!-- <div class="form-group">
+                        <label class="form-label" for="image">Imagem{{ editandoId ? '' : '*' }}</label>
+                        <input
+                            ref="fileInput"
+                            class="form-input"
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/*"
+                            :required="!editandoId"
+                            @change="selecionarImg"
+                        >
+                        <img
+                            v-if="previewImg"
+                            :src="previewImg"
+                            alt="Prévia da imagem"
+                            class="img-preview"
+                        >
+                    </div> -->
+                    
+                    <ImageUploadInput
+                        ref="imageUploadRef"
+                        v-model="arquivoImagem"
+                        :initial-url="imagemAtualUrl"
+                        label="Imagem"
+                        accept="image/*"
+                        :required="!editandoId"
+                    />
                 </div>
 
                 <div class="form-actions">

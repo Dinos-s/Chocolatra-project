@@ -14,7 +14,7 @@ class TrufasController extends Controller
     {
         // $trufas = Trufa::orderBy('created_at', 'desc')->paginate(10);
         $trufas = Trufa::query()
-        ->select('trufas.*', 'sabor_trufas.sabor', 'sabor_trufas.preco')
+        ->select('trufas.*', 'sabor_trufas.sabor', 'sabor_trufas.preco', 'sabor_trufas.image')
         ->join('sabor_trufas', 'sabor_trufas.id', '=', 'trufas.id_sabor')
         ->orderBy('trufas.created_at', 'desc')
         ->paginate(10);

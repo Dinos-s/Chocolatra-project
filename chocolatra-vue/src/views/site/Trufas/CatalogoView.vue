@@ -17,6 +17,8 @@ const carregarTrufas = async () => {
         const response = await api.get('/trufas')
 
         trufas.value = response.data.trufas.data ?? response.data.trufas
+        console.log(response.data);
+        
     } catch (error) {
         console.error(error)
 

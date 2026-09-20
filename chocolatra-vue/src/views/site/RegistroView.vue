@@ -1,79 +1,79 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
-import api from '../../services/api'
-import SiteHeader from '../../components/SiteHeader.vue'
-import SiteFooter from '../../components/SiteFooter.vue'
-import AlertMessage from '../../components/AlertMessage.vue'
+    import { ref } from 'vue'
+    import { useRouter, RouterLink } from 'vue-router'
+    import api from '../../services/api'
+    import SiteHeader from '../../components/SiteHeader.vue'
+    import SiteFooter from '../../components/SiteFooter.vue'
+    import AlertMessage from '../../components/AlertMessage.vue'
 
-const router = useRouter()
+    const router = useRouter()
 
-// Campos do Formulário
-const nome = ref('');
-const email = ref('');
-const senha = ref('');
-const confirmarSenha = ref('');
-const telefone = ref('');
-const cpf = ref('')
-const erro = ref('')
-const carregando = ref(false)
+    // Campos do Formulário
+    const nome = ref('');
+    const email = ref('');
+    const senha = ref('');
+    const confirmarSenha = ref('');
+    const telefone = ref('');
+    const cpf = ref('')
+    const erro = ref('')
+    const carregando = ref(false)
 
-const validarSenha = (senhaVal) => {
-    if (!senhaVal) return null; // Se estiver editando e vazio, opcional (ou ajuste regra)
-    if (senhaVal.length < 8) return 'A senha deve ter pelo menos 8 caracteres.';
+    const validarSenha = (senhaVal) => {
+        if (!senhaVal) return null; // Se estiver editando e vazio, opcional (ou ajuste regra)
+        if (senhaVal.length < 8) return 'A senha deve ter pelo menos 8 caracteres.';
 
-    if (!/[0-9]/.test(senhaVal)) return 'A senha deve conter pelo menos um número.';
+        if (!/[0-9]/.test(senhaVal)) return 'A senha deve conter pelo menos um número.';
 
-    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]/'`~+=;]/.test(senhaVal)) return 'A senha deve conter pelo menos um caractere especial.';
+        if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]/'`~+=;]/.test(senhaVal)) return 'A senha deve conter pelo menos um caractere especial.';
 
-    return null;
-}
+        return null;
+    }
 
-const cadastrar = async () => {
-    erro.value = ''
-    carregando.value = true
+    const cadastrar = async () => {
+        erro.value = ''
+        carregando.value = true
 
-    if(senha.value) {
-        const erroSenha = validarSenha(senha.value);
-        if (erroSenha) {
-            erro.value = erroSenha;
-            return;
+        if(senha.value) {
+            const erroSenha = validarSenha(senha.value);
+            if (erroSenha) {
+                erro.value = erroSenha;
+                return;
+            }
+
+            if (senha.value !== confirmarSenha.value) {
+                erro.value = 'As senhas devem ser iguais.';
+                return;
+            }
         }
 
-        if (senha.value !== confirmarSenha.value) {
-            erro.value = 'As senhas devem ser iguais.';
-            return;
+        try {
+            if(!cpf.value) return erro.value = 'O CPF deve ser preenchido.'
+
+            if(!validarCpf(cpf.value)) return erro.value = 'O CPF informado é inválido.'
+
+            const payload = {
+                name: nome.value,
+                email: email.value,
+                phone: telefone.value,
+                cpf: cpf.value,
+                password: senha.value,
+                password_confirmation: confirmarSenha.value
+            };
+
+            const { data } = await api.post('/registro', payload)
+
+            localStorage.setItem('token', data.token)
+            localStorage.setItem('user', JSON.stringify(data.user))
+
+            router.push('/catalogo')
+        } catch (e) {
+            erro.value = e.response?.data?.message || 'Não foi possível cadastrar.'
+        } finally {
+            carregando.value = false
         }
     }
 
-    try {
-        if(!cpf.value) return erro.value = 'O CPF deve ser preenchido.'
-
-        if(!validarCpf(cpf.value)) return erro.value = 'O CPF informado é inválido.'
-
-        const payload = {
-            name: nome.value,
-            email: email.value,
-            phone: telefone.value,
-            cpf: cpf.value,
-            password: senha.value,
-            password_confirmation: confirmarSenha.value
-        };
-
-        const { data } = await api.post('/registro', payload)
-
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-
-        router.push('/catalogo')
-    } catch (e) {
-        erro.value = e.response?.data?.message || 'Não foi possível cadastrar.'
-    } finally {
-        carregando.value = false
-    }
-}
-
-const validarCpf = (cpf) => {
+    const validarCpf = (cpf) => {
         const limpo = String(cpf).replace(/[^\d]+/g, '');
 
         if (limpo.length !== 11 || /^(\d)\1+$/.test(limpo)) return false;

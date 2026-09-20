@@ -11,7 +11,7 @@ class SaboresController extends Controller {
     public function sabores(): JsonResponse
     {
         $sabores = Sabor::orderBy('sabor', 'asc')->paginate(10);
-
+        // dd($sabores);
         return response()->json([
             'status' => true,
             'sabores' => $sabores
@@ -21,14 +21,14 @@ class SaboresController extends Controller {
     public function novoSabor(Request $request): JsonResponse
     {
         $request->validate([
-            'sabor' => 'required|string',
-            'preco' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'sabor' => 'required|string|max:255',
+            'preco' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/sabores'), $imageName);
         }
 
@@ -54,9 +54,38 @@ class SaboresController extends Controller {
             ], 404);
         }
 
+        $request->validate([
+            'sabor' => 'required|string|max:255',
+            'preco' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            
+            // Remove a imagem antiga
+            if ($sabor->image) {
+                $oldImage = public_path('images/sabores/' . $sabor->image);
+
+                if (file_exists($oldImage)) {
+                    unlink($oldImage);
+                }
+            }
+
+            // Nome original
+            $imageName = $image->getClientOriginalName();
+
+            // Salva a nova imagem
+            $image->move(
+                public_path('images/sabores'),
+                $imageName
+            );
+        }
+
         $atualizar = [
             'sabor' => $request->sabor,
-            'preco' => $request->preco
+            'preco' => $request->preco,
+            'image' => $imageName
         ];
 
         $sabor->update($atualizar);
@@ -69,6 +98,12 @@ class SaboresController extends Controller {
     public function destroy(Sabor $sabor): JsonResponse
     {
         try {
+            $caminho = public_path('images/sabores/' . $sabor->image);
+
+            if ($sabor->image && file_exists($caminho)) {
+                unlink($caminho);
+            }
+
             $sabor->delete();
 
             return response()->json([
