@@ -108,7 +108,8 @@ onMounted(() => {
                 >
 
                     <div class="trufa-imagem">
-                        <span>🍫</span>
+                        <img v-if="trufa.image" :src="trufa.img_url" :alt="trufa.sabor" class="trufa-img">
+                        <span v-else>🍫</span>
                     </div>
 
                     <div class="trufa-info">
@@ -223,6 +224,13 @@ onMounted(() => {
         justify-content: center;
 
         background-color: #f0e6d8;
+        overflow: hidden;
+    }
+
+    .trufa-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .trufa-imagem span {
