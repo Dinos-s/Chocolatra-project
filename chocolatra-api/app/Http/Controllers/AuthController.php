@@ -22,6 +22,7 @@ class AuthController extends Controller
                 'message' => 'Credenciais inválidas'
             ], 401);
         }
+        
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

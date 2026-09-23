@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/site/HomeView.vue'
 import LoginView from '../views/admin/LoginView.vue'
 import DashboardHomeView from '../views/admin/DasboardHomeView.vue'
+import api from '../services/api.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,22 +89,61 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
-  const isAdminAuth = localStorage.getItem('admin_token')
+// router.beforeEach((to) => {
+//   const isAdminAuth = localStorage.getItem('admin_token')
+//   const isClientAuth = localStorage.getItem('token')
+
+//   if (to.meta.requiresAuth && !isAdminAuth) {
+//     return { name: 'adm-login' }
+//   }
+
+//   if (to.meta.requiresAClientAuth && !isClientAuth) {
+//     return { 
+//       name: 'login', 
+//       query: { redirect: to.fullPath } 
+//     }
+//   }
+
+//   if (to.nome === 'home' && isAdminAuth) {
+//     return { name: 'dashboard' }
+//   }
+// })
+
+router.beforeEach(async (to) => {
   const isClientAuth = localStorage.getItem('token')
 
-  if (to.meta.requiresAuth && !isAdminAuth) {
-    return { name: 'adm-login' }
+  if (to.meta.requiresAClientAuth && !isClientAuth) {
+    return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  if (to.meta.requiresAClientAuth && !isClientAuth) {
-    return { 
-      name: 'login', 
-      query: { redirect: to.fullPath } 
+  if (to.meta.requiresClienteLogin && !isClientAuth) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.requiresAuth) {
+    const adminToken = localStorage.getItem('admin_token')
+
+    if (!adminToken) {
+      return { name: 'adm-login' }
+    }
+
+    try {
+      const response = await api.get('/user', {
+        headers: { Authorization: `Bearer ${adminToken}` }
+      })
+
+      if (response.data.role !== 'admin') {
+        localStorage.removeItem('admin_token') // token válido, mas não é admin — descarta
+        return { name: 'adm-login' }
+      }
+    } catch (error) {
+      // token inválido, expirado, ou revogado
+      localStorage.removeItem('admin_token')
+      return { name: 'adm-login' }
     }
   }
 
-  if (to.nome === 'home' && isAdminAuth) {
+  if (to.name === 'home' && localStorage.getItem('admin_token')) {
     return { name: 'dashboard' }
   }
 })

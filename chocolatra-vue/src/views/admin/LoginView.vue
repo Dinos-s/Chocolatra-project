@@ -20,10 +20,16 @@
         password: senha.value
       })
 
-      const token = response.data.token
+      const {token, user} = response.data
+    
+      if (user.role !== 'admin') {
+        msgError.value = 'Acesso restrito a administradores.'
+        email.value = ''
+        senha.value = ''
+        return
+      }
 
       localStorage.setItem('admin_token', token)
-
       router.push('/adm/dashboard')
 
     } catch (error) {
@@ -35,6 +41,8 @@
       }
 
       msgError.value = 'Email ou senha inválidos.'
+    } finally {
+      loading.value = false
     }
   }
 
