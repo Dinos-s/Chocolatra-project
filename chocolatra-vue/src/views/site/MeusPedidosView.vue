@@ -1,38 +1,56 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import api from '../../services/api'
-import SiteHeader from '../../components/SiteHeader.vue'
-import SiteFooter from '../../components/SiteFooter.vue'
+    import { ref, onMounted } from 'vue'
+    import api from '../../services/api'
+    import SiteHeader from '../../components/SiteHeader.vue'
+    import SiteFooter from '../../components/SiteFooter.vue'
 
-const pedidos = ref([])
-const carregando = ref(true)
-const dataInicio = ref('')
-const dataFim = ref('')
+    const pedidos = ref([])
+    const carregando = ref(true)
+    const dataInicio = ref('')
+    const dataFim = ref('')
 
-const formatarPreco = (valor) =>
-    Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    const formatarPreco = (valor) =>
+        Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
+    const paraDataInput = (data) => {
+        const ano = data.getFullYear()
+        const mes = String(data.getMonth() + 1).padStart(2, '0')
+        const dia = String(data.getDate()).padStart(2, '0')
 
-const carregarPedidos = async () => {
-    carregando.value = true
-
-    try {
-        const { data } = await api.get('/meus-pedidos', {
-            params: {
-                data_inicio: dataInicio.value || undefined,
-                data_fim: dataFim.value || undefined,
-            }
-        })
-
-        pedidos.value = data.pedidos.data
-    } catch (e) {
-        console.error(e)
-    } finally {
-        carregando.value = false
+        return `${ano}-${mes}-${dia}`
     }
-}
 
-onMounted(carregarPedidos)
+    const definirPeriodo = () => {
+        const hoje = new Date()
+        const firstDay = new Date(hoje.getFullYear(), hoje.getMonth(), 1)
+
+        dataInicio.value = paraDataInput(firstDay)
+        dataFim.value = paraDataInput(hoje)
+    }
+
+    const carregarPedidos = async () => {
+        carregando.value = true
+
+        try {
+            const { data } = await api.get('/meus-pedidos', {
+                params: {
+                    data_inicio: dataInicio.value || undefined,
+                    data_fim: dataFim.value || undefined,
+                }
+            })
+
+            pedidos.value = data.pedidos.data
+        } catch (e) {
+            console.error(e)
+        } finally {
+            carregando.value = false
+        }
+    }
+
+    onMounted(() => {
+        definirPeriodo(),
+        carregarPedidos()
+    })
 </script>
 
 <template>

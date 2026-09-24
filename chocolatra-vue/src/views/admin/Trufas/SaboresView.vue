@@ -93,12 +93,14 @@
         formData.append('sabor', sabor.value);
         formData.append('preco', Number(preco.value.replace(',', '.')));
 
-        if (imagemAtualUrl.value) {
+        if (arquivoImagem.value) {
             formData.append('image', arquivoImagem.value);
         }
 
+        console.log(formData);
+        
         return formData;
-    }
+    };
 
     const salvarSabor = async () => {
         msgError.value = '';
@@ -106,9 +108,10 @@
 
         try {
             const formData = constFormData();
+            
             if (editandoId.value) {
                 formData.append('_method', 'PUT');
-
+                
                 await api.post(`/editSabor/${editandoId.value}`, formData);
 
                 msgSucesso.value = 'Sabor editado com sucesso.';

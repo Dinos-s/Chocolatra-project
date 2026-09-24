@@ -46,6 +46,7 @@ class SaboresController extends Controller {
 
     public function atualizar(Request $request, Sabor $sabor): JsonResponse
     {
+        // dd($request->all());
         $sabor = Sabor::find($sabor->id);
 
         if (!$sabor) {
