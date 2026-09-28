@@ -46,7 +46,6 @@ class SaboresController extends Controller {
 
     public function atualizar(Request $request, Sabor $sabor): JsonResponse
     {
-        // dd($request->all());
         $sabor = Sabor::find($sabor->id);
 
         if (!$sabor) {
@@ -60,6 +59,10 @@ class SaboresController extends Controller {
             'preco' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
+
+        // mantém a imagem que já está salva.
+        // Só é sobrescrita se um arquivo novo realmente chegar.
+        $imageName = $sabor->image;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');

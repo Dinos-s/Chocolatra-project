@@ -96,8 +96,6 @@
         if (arquivoImagem.value) {
             formData.append('image', arquivoImagem.value);
         }
-
-        console.log(formData);
         
         return formData;
     };

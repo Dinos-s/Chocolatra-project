@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/cart',
       name: 'carrinho',
       component: () => import('../views/site/CartView.vue'),
-      meta: { requiresAClientAuth: true },
+      meta: { requiresClientAuth: true },
     },
     {
       path: '/about',
@@ -50,7 +50,7 @@ const router = createRouter({
       path: '/meus-pedidos',
       name: 'meus-pedidos',
       component: () => import('../views/site/MeusPedidosView.vue'),
-      meta: { requiresClienteLogin: true },
+      meta: { requiresClientAuth: true },
     },
 
     // Admin
@@ -112,7 +112,7 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const isClientAuth = localStorage.getItem('token')
 
-  if (to.meta.requiresAClientAuth && !isClientAuth) {
+  if (to.meta.requiresClientAuth && !isClientAuth) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 

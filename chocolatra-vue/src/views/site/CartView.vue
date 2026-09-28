@@ -243,6 +243,7 @@
 
                     <button class="btn-copiar-pix" @click="copiarPix">
                         <i class="fa-solid fa-copy"></i>
+                        olá
                         {{ copiado ? 'Código Copiado!' : 'Copiar PIX' }}
                     </button>
                 </div>
@@ -543,10 +544,9 @@
             align-items: flex-start;
         }
     }
-</style>
 
-<!-- Estilo do modal -->
-<style>
+/* Estilo do modal  */
+
     .modal-overlay {
         position: fixed;
         inset: 0;
