@@ -13,6 +13,7 @@
         "laravel/framework": "^13.17",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "mercadopago/dx-php": "3.16.0",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {

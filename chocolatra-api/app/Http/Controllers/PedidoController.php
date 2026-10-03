@@ -8,6 +8,9 @@ use App\Models\Sabor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\Exceptions\MPApiException;
+use MercadoPago\MercadoPagoConfig;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PedidoController extends Controller
@@ -57,21 +60,52 @@ class PedidoController extends Controller
                 $pedido->itens()->create($item);
             }
 
-            // payloads para qr code com gateway ou link indentificador
-            $payload = route('pedidos.confirmar', $pedido->id);
-            $pedido->update(['qr_code_payload' => $payload]);
+            // // payloads para qr code com gateway ou link indentificador
+            // $payload = route('pedidos.confirmar', $pedido->id);
+            // $pedido->update(['qr_code_payload' => $payload]);
 
-            // gera em SVG em vez de PNG -> não depende da extensão Imagick
-            $qrCodeSvg = QrCode::format('svg')->size(300)->generate($payload);
-            $qrCodeBase64 = base64_encode($qrCodeSvg);
+            // // gera em SVG em vez de PNG -> não depende da extensão Imagick
+            // $qrCodeSvg = QrCode::format('svg')->size(300)->generate($payload);
+            // $qrCodeBase64 = base64_encode($qrCodeSvg);
 
-            return response()->json([
-                'status' => true,
-                'id_pedido' => $pedido->id,
-                'total' => $pedido->total,
-                'qr_code' => 'data:image/svg+xml;base64,' . $qrCodeBase64,   // <-- mime type mudou
-                'qr_code_payload' => $payload
-            ], 201);
+            MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
+
+            $client = new PaymentClient();
+
+            try {
+                $payment = $client->create([
+                    "transaction_amount" => $total,
+                    "description" => "Pedido #{$pedido->id} - Chocolatra",
+                    "payment_method_id" => "pix",
+                    "external_reference" => $pedido->id,
+                    "payer" => [
+                        "email" => auth()->user()->email,
+                    ],
+                    "external_reference" => $pedido->id,
+                ]);
+
+                $pedido->update([
+                    'mp_payment_id' => $payment->id, 'mp_status' => $payment->status,
+                    'qr_code_payload' => $payment->point_of_interaction->transaction_data->qr_code ?? null,
+                ]);
+
+                $qrCodeBase64 = $payment->point_of_interaction->transaction_data->qr_code_base64 ?? null;
+
+                return response()->json([
+                    'status' => true,
+                    'id_pedido' => $pedido->id,
+                    'total' => $pedido->total,
+                    'qr_code' => 'data:image/png;base64,' . $qrCodeBase64,   // <-- mime type mudou
+                    'pix_payload' => $paymente->point_of_interaction->transaction_data->qr_code ?? null
+                ], 201);
+
+            } catch (MPApiException $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Erro ao criar pagamento PIX',
+                    'error'=>$e->getMessage(),
+                ], 500);
+            }
         });
     }
 
@@ -135,6 +169,39 @@ class PedidoController extends Controller
         return response()->json([
             'status' => true,
             'pedidos' => $pedidos
+        ]);
+    }
+
+    // webhook do mercado pago
+    public function webhook(Request $request): JsonResponse
+    {
+        $type = $request->input('type');
+        $dataId = $request->input('data.id');
+
+        if ($type === 'payment' && $dataId) {
+            MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
+            $client = new PaymentClient();
+
+            try {
+                $payment = $client->get($dataId);
+                
+                $pedido = Pedido::where('mp_payment_id', $payment->id)->first();
+
+                if ($pedido && $payment->status === 'approved' && $pedido->status !== 'pago') {
+                    // confirma o pagamento
+                    $this->confirmarPagamento($pedido);
+                }
+
+                $pedido?->update(['mp_status' => $payment->status]);
+
+            } catch (\Exception $e) {
+                
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Webhook recebido com sucesso'
         ]);
     }
 }

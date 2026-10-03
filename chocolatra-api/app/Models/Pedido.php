@@ -13,6 +13,8 @@ class Pedido extends Model
         'status',
         'total',
         'qr_code_payload',
+        'mp_payment_id',
+        'mp_status',
     ];
 
     public function itens()

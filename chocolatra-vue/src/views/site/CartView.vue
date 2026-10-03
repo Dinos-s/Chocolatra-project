@@ -243,7 +243,6 @@
 
                     <button class="btn-copiar-pix" @click="copiarPix">
                         <i class="fa-solid fa-copy"></i>
-                        olá
                         {{ copiado ? 'Código Copiado!' : 'Copiar PIX' }}
                     </button>
                 </div>
