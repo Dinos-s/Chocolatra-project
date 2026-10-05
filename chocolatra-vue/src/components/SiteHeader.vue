@@ -5,8 +5,8 @@
     const router = useRouter()
     const logado = computed(() => !!localStorage.getItem('token'))
     const sair = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        // localStorage.removeItem('token')
+        // localStorage.removeItem('user')
         router.push('/')
     }
 </script>

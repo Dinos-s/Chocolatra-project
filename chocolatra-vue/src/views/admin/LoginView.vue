@@ -2,7 +2,7 @@
   import { RouterLink, useRouter } from 'vue-router';
   import AlertMessage from '../../components/AlertMessage.vue';
   import { ref } from 'vue';
-  import api from '../../services/api.js';
+  import api, { getCsrfCookie } from '../../services/api.js';
 
   const router = useRouter()
   const email = ref('')
@@ -15,6 +15,8 @@
     loading.value = true
 
     try {
+      await getCsrfCookie()
+
       const response = await api.post('/login', {
         email: email.value,
         password: senha.value
@@ -24,12 +26,12 @@
     
       if (user.role !== 'admin') {
         msgError.value = 'Acesso restrito a administradores.'
-        email.value = ''
-        senha.value = ''
+        // email.value = ''
+        // senha.value = ''
         return
       }
 
-      localStorage.setItem('admin_token', token)
+      // localStorage.setItem('admin_token', token)
       router.push('/adm/dashboard')
 
     } catch (error) {
