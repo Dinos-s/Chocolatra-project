@@ -1,43 +1,43 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
-import api from '../../../services/api'
-import SiteHeader from '../../../components/SiteHeader.vue'
-import SiteFooter from '../../../components/SiteFooter.vue'
+    import { ref, onMounted } from 'vue'
+    import { RouterLink } from 'vue-router'
+    import api from '../../../services/api'
+    import SiteHeader from '../../../components/SiteHeader.vue'
+    import SiteFooter from '../../../components/SiteFooter.vue'
 
-const trufas = ref([])
-const carregando = ref(true)
-const erro = ref('')
+    const trufas = ref([])
+    const carregando = ref(true)
+    const erro = ref('')
 
-const carregarTrufas = async () => {
-    carregando.value = true
-    erro.value = ''
+    const carregarTrufas = async () => {
+        carregando.value = true
+        erro.value = ''
 
-    try {
-        const response = await api.get('/trufas')
+        try {
+            const response = await api.get('/trufas')
 
-        trufas.value = response.data.trufas.data ?? response.data.trufas
-        console.log(response.data);
-        
-    } catch (error) {
-        console.error(error)
+            trufas.value = response.data.trufas.data ?? response.data.trufas
+            console.log(response.data);
+            
+        } catch (error) {
+            console.error(error)
 
-        erro.value = 'Não foi possível carregar as trufas.'
-    } finally {
-        carregando.value = false
+            erro.value = 'Não foi possível carregar as trufas.'
+        } finally {
+            carregando.value = false
+        }
     }
-}
 
-const formatarPreco = (preco) => {
-    return Number(preco || 0).toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
+    const formatarPreco = (preco) => {
+        return Number(preco || 0).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        })
+    }
+
+    onMounted(() => {
+        carregarTrufas()
     })
-}
-
-onMounted(() => {
-    carregarTrufas()
-})
 
     const adicionarAoCarrinho = (trufa) => {
         const carrinho = JSON.parse(

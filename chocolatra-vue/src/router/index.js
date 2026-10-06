@@ -152,16 +152,17 @@ const router = createRouter({
 
 // V3
 router.beforeEach(async (to) => {
-  if (to.meta.requiresAuth || to.meta.requiresAClientAuth || to.meta.requiresClienteLogin) {
+  if (to.meta.requiresAuth || to.meta.requiresClientAuth) {
     try {
       const { data: user } = await api.get('/user')
 
       if (to.meta.requiresAuth && user.role !== 'admin') {
         return { name: 'adm-login' }
       }
-      // requiresAClientAuth / requiresClienteLogin: só precisa estar autenticado, qualquer role
     } catch (error) {
-      if (to.meta.requiresAuth) return { name: 'adm-login' }
+      if (to.meta.requiresAuth) {
+        return { name: 'adm-login' }
+      }
       return { name: 'login', query: { redirect: to.fullPath } }
     }
   }
