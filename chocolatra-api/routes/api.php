@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/registro', [AuthController::class, 'registrarCliente']);
 Route::get('/trufas', [TrufasController::class, 'trufas']);
-Route::post('mercadopago/webhook', [PedidoController::class, 'webhook']);
+Route::post('/mercadopago/webhook', [PedidoController::class, 'webhook']);
 
 // rota protegida para qualquer usuário
 Route::middleware('auth:sanctum')->group(function () {

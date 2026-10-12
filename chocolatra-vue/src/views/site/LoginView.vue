@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
-import api from '../../services/api.js'
+import api, { getCsrfCookie } from '../../services/api.js'
 import SiteHeader from '../../components/SiteHeader.vue'
 import SiteFooter from '../../components/SiteFooter.vue'
 
@@ -18,13 +18,15 @@ const entrar = async () => {
     carregando.value = true
 
     try {
-        const { data } = await api.post('/login', {
+        await getCsrfCookie()
+        
+        await api.post('/login', {
             email: email.value,
             password: senha.value
         })
 
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+        // localStorage.setItem('token', data.token)
+        // localStorage.setItem('user', JSON.stringify(data.user))
 
         // volta pra onde o usuário estava tentando ir (ex: o carrinho)
         router.push(route.query.redirect || '/catalogo')
@@ -47,12 +49,12 @@ const entrar = async () => {
 
                 <div class="campo">
                     <label for="email">E-mail</label>
-                    <input id="email" type="email" v-model="email" required />
+                    <input id="email" placeholder="Seu E-mail" type="email" v-model="email" required />
                 </div>
 
                 <div class="campo">
                     <label for="senha">Senha</label>
-                    <input id="senha" type="password" v-model="senha" required />
+                    <input id="senha" placeholder="Sua Senha" type="password" v-model="senha" required />
                 </div>
 
                 <button type="submit" class="btn-acessar" :disabled="carregando">

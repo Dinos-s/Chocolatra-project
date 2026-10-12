@@ -81,11 +81,11 @@ class PedidoController extends Controller
                     "payer" => [
                         "email" => auth()->user()->email,
                     ],
-                    "external_reference" => $pedido->id,
                 ]);
-
+                
                 $pedido->update([
-                    'mp_payment_id' => $payment->id, 'mp_status' => $payment->status,
+                    'mp_payment_id' => $payment->id, 
+                    'mp_status' => $payment->status,
                     'qr_code_payload' => $payment->point_of_interaction->transaction_data->qr_code ?? null,
                 ]);
 
@@ -95,15 +95,18 @@ class PedidoController extends Controller
                     'status' => true,
                     'id_pedido' => $pedido->id,
                     'total' => $pedido->total,
-                    'qr_code' => 'data:image/png;base64,' . $qrCodeBase64,   // <-- mime type mudou
-                    'pix_payload' => $paymente->point_of_interaction->transaction_data->qr_code ?? null
+                    'qr_code' => $qrCodeBase64 ? 'data:image/png;base64,' . $qrCodeBase64 : null,   // <-- mime type mudou
+                    'pix_payload' => $payment->point_of_interaction->transaction_data->qr_code ?? null
                 ], 201);
 
             } catch (MPApiException $e) {
+                $apiResponse = $e->getApiResponse();
+            
                 return response()->json([
-                    'status' => false,
+                    'status'  => false,
                     'message' => 'Erro ao criar pagamento PIX',
-                    'error'=>$e->getMessage(),
+                    'error'   => $e->getMessage(),
+                    'details' => $apiResponse ? $apiResponse->getContent() : null,
                 ], 500);
             }
         });

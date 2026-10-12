@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -15,30 +16,49 @@ class AuthController extends Controller
            'password' => 'required'
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        // $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        // if (!$user || !Hash::check($data['password'], $user->password)) {
+        //     return response()->json([
+        //         'message' => 'Credenciais inválidas'
+        //     ], 401);
+        // }
+        
+        // $token = $user->createToken('auth_token')->plainTextToken;
+
+        if (!Auth::attempt($data)) {
             return response()->json([
-                'message' => 'Credenciais inválidas'
+                'message' => 'Credenciais inválidas'
             ], 401);
         }
-        
-        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login realizado com sucesso',
-            'user' => $user,
-            'token' => $token
+            // 'user' => $user,
+            // 'token' => $token,
+            'user'=>Auth::user()
         ]);
     }
 
     public function logout(Request $request): JsonResponse {
-        $request->user()->currentAccessToken()->delete();
+        // $request->user()->currentAccessToken()->delete();
+
+        // return response()->json([
+        //     'message' => 'Logout realizado com sucesso'
+        // ]);
+
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logout realizado com sucesso'
         ]);
     }
+
 
     public function novoUser(Request $request): JsonResponse {
         $request->validate([
