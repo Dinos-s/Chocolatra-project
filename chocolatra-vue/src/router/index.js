@@ -111,60 +111,42 @@ const router = createRouter({
 // })
 
 // V2
-// router.beforeEach(async (to) => {
-//   const isClientAuth = localStorage.getItem('token')
-
-//   if (to.meta.requiresClientAuth && !isClientAuth) {
-//     return { name: 'login', query: { redirect: to.fullPath } }
-//   }
-
-//   if (to.meta.requiresClienteLogin && !isClientAuth) {
-//     return { name: 'login', query: { redirect: to.fullPath } }
-//   }
-
-//   if (to.meta.requiresAuth) {
-//     const adminToken = localStorage.getItem('admin_token')
-
-//     if (!adminToken) {
-//       return { name: 'adm-login' }
-//     }
-
-//     try {
-//       const response = await api.get('/user', {
-//         headers: { Authorization: `Bearer ${adminToken}` }
-//       })
-
-//       if (response.data.role !== 'admin') {
-//         localStorage.removeItem('admin_token') // token válido, mas não é admin — descarta
-//         return { name: 'adm-login' }
-//       }
-//     } catch (error) {
-//       // token inválido, expirado, ou revogado
-//       localStorage.removeItem('admin_token')
-//       return { name: 'adm-login' }
-//     }
-//   }
-
-//   if (to.name === 'home' && localStorage.getItem('admin_token')) {
-//     return { name: 'dashboard' }
-//   }
-// })
-
-// V3
 router.beforeEach(async (to) => {
-  if (to.meta.requiresAuth || to.meta.requiresClientAuth) {
-    try {
-      const { data: user } = await api.get('/user')
+  const isClientAuth = localStorage.getItem('token')
 
-      if (to.meta.requiresAuth && user.role !== 'admin') {
+  if (to.meta.requiresClientAuth && !isClientAuth) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.requiresClienteLogin && !isClientAuth) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.requiresAuth) {
+    const adminToken = localStorage.getItem('admin_token')
+
+    if (!adminToken) {
+      return { name: 'adm-login' }
+    }
+
+    try {
+      const response = await api.get('/user', {
+        headers: { Authorization: `Bearer ${adminToken}` }
+      })
+
+      if (response.data.role !== 'admin') {
+        localStorage.removeItem('admin_token') // token válido, mas não é admin — descarta
         return { name: 'adm-login' }
       }
     } catch (error) {
-      if (to.meta.requiresAuth) {
-        return { name: 'adm-login' }
-      }
-      return { name: 'login', query: { redirect: to.fullPath } }
+      // token inválido, expirado, ou revogado
+      localStorage.removeItem('admin_token')
+      return { name: 'adm-login' }
     }
+  }
+
+  if (to.name === 'home' && localStorage.getItem('admin_token')) {
+    return { name: 'dashboard' }
   }
 })
 

@@ -2,7 +2,7 @@
   import { RouterLink, useRouter } from 'vue-router';
   import AlertMessage from '../../components/AlertMessage.vue';
   import { ref } from 'vue';
-  import api, { getCsrfCookie } from '../../services/api.js';
+  import api from '../../services/api.js';
 
   const router = useRouter()
   const email = ref('')
@@ -15,8 +15,6 @@
     loading.value = true
 
     try {
-      await getCsrfCookie()
-
       const response = await api.post('/login', {
         email: email.value,
         password: senha.value
@@ -31,7 +29,7 @@
         return
       }
 
-      // localStorage.setItem('admin_token', token)
+      localStorage.setItem('admin_token', token)
       router.push('/adm/dashboard')
 
     } catch (error) {

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
-import api, { getCsrfCookie } from '../../services/api.js'
+import api from '../../services/api.js'
 import SiteHeader from '../../components/SiteHeader.vue'
 import SiteFooter from '../../components/SiteFooter.vue'
 
@@ -17,16 +17,14 @@ const entrar = async () => {
     erro.value = ''
     carregando.value = true
 
-    try {
-        await getCsrfCookie()
-        
-        await api.post('/login', {
+    try {        
+        const {data} = await api.post('/login', {
             email: email.value,
             password: senha.value
         })
 
-        // localStorage.setItem('token', data.token)
-        // localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('user', JSON.stringify(data.user))
 
         // volta pra onde o usuário estava tentando ir (ex: o carrinho)
         router.push(route.query.redirect || '/catalogo')

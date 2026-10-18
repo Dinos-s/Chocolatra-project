@@ -16,47 +16,30 @@ class AuthController extends Controller
            'password' => 'required'
         ]);
 
-        // $user = User::where('email', $data['email'])->first();
+        $user = User::where('email', $data['email'])->first();
 
-        // if (!$user || !Hash::check($data['password'], $user->password)) {
-        //     return response()->json([
-        //         'message' => 'Credenciais inválidas'
-        //     ], 401);
-        // }
-        
-        // $token = $user->createToken('auth_token')->plainTextToken;
-
-        if (!Auth::attempt($data)) {
+        if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json([
-                'message' => 'Credenciais inválidas'
+                'message' => 'Credenciais inválidas'
             ], 401);
         }
-
-        $request->session()->regenerate();
+        
+        $user->tokens()->delete();
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login realizado com sucesso',
-            // 'user' => $user,
-            // 'token' => $token,
-            'user'=>Auth::user()
+            'user' => $user,
+            'token' => $token,
         ]);
     }
 
     public function logout(Request $request): JsonResponse {
-        // $request->user()->currentAccessToken()->delete();
-
-        // return response()->json([
-        //     'message' => 'Logout realizado com sucesso'
-        // ]);
-
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Logout realizado com sucesso'
-        ]);
+        ], 200);
     }
 
 
