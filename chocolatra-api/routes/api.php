@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\SaboresController;
 use App\Http\Controllers\TrufasController;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 // rota publica
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/registro', [AuthController::class, 'registrarCliente']);
+Route::post('/registro', [ClienteController::class, 'registrarCliente']);
 Route::get('/trufas', [TrufasController::class, 'trufas']);
 Route::post('/mercadopago/webhook', [PedidoController::class, 'webhook']);
 
